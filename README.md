@@ -1,5 +1,7 @@
 # AugGPT - Automatic Unit Test Generation Tool
 
+<a href="https://doi.org/10.5281/zenodo.14826333"><img src="https://zenodo.org/badge/928230839.svg" alt="DOI"></a>
+
 This is an implementation of the paper:
 Automatic Unit Test Generation for Programming Assignments
 Using Large Language Models. Check [README-Test.md](README-Test.md)
