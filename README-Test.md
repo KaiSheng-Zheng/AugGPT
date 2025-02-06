@@ -2,13 +2,28 @@
 
 This is an implementation of the paper: 
 Automatic Unit Test Generation for Programming Assignments 
-Using Large Language Models. This document may guide you to 
+Using Large Language Models. This document provides guidance to 
 regenerate some paper's result.
 
 ## Test
 
-To regenerate the paper's quantitative result, 
-you may run the test under the directory [src/test/java/com/auggpt](src%2Ftest%2Fjava%2Fcom%2Fauggpt)
+### Dataset
+
+To regenerate the paper's quantitative result, you first need to [download the dataset]() 
+and extract it under the root of the repo:
+
+```text
+AugGPT
+|
+|-- dataset
+|-- data
+|-- src
+...
+```
+
+### Run
+
+Then you may run the test under the directory [src/test/java/com/auggpt](src%2Ftest%2Fjava%2Fcom%2Fauggpt)
 
 [CalculateAML.java](src%2Ftest%2Fjava%2Fcom%2Fauggpt%2FCalculateAML.java)
 will calculate the average logical lines per method of the test suite for each approach. 
