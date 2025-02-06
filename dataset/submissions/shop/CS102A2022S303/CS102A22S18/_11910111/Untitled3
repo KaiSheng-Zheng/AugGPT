@@ -1,0 +1,99 @@
+import java.util.ArrayList;
+
+public class Customer {
+    private static int cnt=0; // initialized to 0, and will increase by 1 when the constructor is called.
+    private int id;  // unique for each customer and the value is set to cnt.
+    private String name;
+    private ArrayList<Product> shoppingCart; // The list of purchased products; default is empty.
+    private float wallet;
+    public Customer(String name, float wallet){
+        cnt++;
+        this.id=cnt;
+        this.name=name;
+        this.wallet=wallet;
+        this.shoppingCart=new ArrayList<>();
+    }
+    public boolean rateProduct(Product product, int rating){return product.setRating(rating);}
+    public void updateWallet(float amount){
+       wallet =wallet+amount;
+
+    }
+    public boolean purchaseProduct(Store store, Product product){
+        if (product.getPrice()>wallet){
+            return false;
+        }else if (!store.hasProduct(product)){
+            return false;
+        }
+        store.removeProduct(product);
+        updateWallet(-product.getPrice());
+        shoppingCart.add(product);
+        return true;
+    }
+    public void viewShoppingCart(SortBy sortMethod)
+    {
+        switch (sortMethod){
+            case Price:
+                ArrayList<Product> sort =new ArrayList<>(shoppingCart);
+                for (int i=1;i<sort.size();i++){
+                    for (int j=0;j<sort.size()-1;j++){
+                        if (sort.get(j).getPrice()>sort.get(j+1).getPrice()){
+                            Product temp = sort.get(j);
+                            sort.set(j, sort.get(j + 1));
+                            sort.set(j + 1, temp);
+                        }
+                    }
+                }
+                for (Product a:sort){
+                    System.out.print(a.toString());
+                }
+                break;
+
+            case Rating:
+                ArrayList<Product> sor =new ArrayList<>(shoppingCart);
+                for (int i=1;i<sor.size();i++){
+                    for (int j=0;j<sor.size()-1;j++){
+                        if (sor.get(j).getAvgRating()>sor.get(j+1).getAvgRating()){
+                            Product temp = sor.get(j);
+                            sor.set(j, sor.get(j + 1));
+                            sor.set(j + 1, temp);
+                        }
+                    }
+                }
+                for (Product a:sor){
+                    System.out.print(a.toString());
+                }
+                break;
+
+            default:
+                ArrayList<Product> sorts =new ArrayList<>(shoppingCart);
+                for (Product a:sorts){
+                    System.out.print(a.toString());
+                }
+                break;
+        }
+
+
+
+
+
+    }
+
+
+
+    public boolean hadProduct(Product product){
+        for (Product a:shoppingCart){
+        if (product.getId() == a.getId())
+            return true;
+        }
+        return  false;
+    }
+    public boolean refundProduct(Product product){
+        if (hadProduct(product)){
+            shoppingCart.remove(product);
+            updateWallet(product.getPrice());
+            product.from.transact(product,1);
+            product.from=null;
+            return true;
+        }return false;
+    }
+}

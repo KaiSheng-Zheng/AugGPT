@@ -1,0 +1,38 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import java.util.List;
+
+public class OverLapShapeCanvas implements ShapeCanvas {
+    private List<Shape> shapes;
+    private char[][] canvas;
+
+    public OverLapShapeCanvas(int rows, int cols) {
+    }
+
+    public boolean addShape(int x, int y, char pattern, int... params) {
+        return false;
+    }
+
+    public int getSpaceGridCount() {
+        return 0;
+    }
+
+    public int getShapeCount() {
+        return 0;
+    }
+
+    public List<Shape> getShapesByArea() {
+        return null;
+    }
+
+    public List<Shape> getShapesByLocation() {
+        return null;
+    }
+
+    public char[][] getCanvas() {
+        return new char[0][];
+    }
+}

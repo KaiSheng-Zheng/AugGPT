@@ -1,0 +1,90 @@
+import java.util.Arrays;
+
+public class Circle extends Shape {
+    private int radius;
+
+    public Circle(Location location, char pattern, int radius) {
+        super(location, pattern);
+        this.radius = radius;
+        grids = new char[radius * 2][radius * 2];
+        this.fillGrids();
+    }
+
+    ;
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+    public void fillGrids() {
+        this.grids = new char[radius * 2][radius * 2];
+        for (int i = 0; i < grids.length; i++) {
+            Arrays.fill(grids[i], ' ');
+        }
+        //1
+        for (int i = 0; i < radius; i++) {
+            for (int j = 0; j < radius; j++) {
+                if ((i + 1 - radius) * (i + 1 - radius) + (j + 1 - radius) * (j + 1 - radius) < radius * radius) {
+                    grids[i][j] = pattern;
+                }
+            }
+        }
+        //2
+        for (int i = 0; i < radius; i++) {
+            for (int j = radius; j < radius * 2; j++) {
+                if ((i + 1 - radius) * (i + 1 - radius) + (j - radius) * (j - radius) < radius * radius) {
+                    grids[i][j] = pattern;
+                }
+            }
+        }
+        //3
+        for (int i = radius; i < radius * 2; i++) {
+            for (int j = 0; j < radius; j++) {
+                if ((i - radius) * (i - radius) + (j + 1 - radius) * (j + 1 - radius) < radius * radius) {
+                    grids[i][j] = pattern;
+                }
+            }
+        }
+        //4
+        for (int i = radius; i < radius * 2; i++) {
+            for (int j = radius; j < radius * 2; j++) {
+                if ((i - radius) * (i - radius) + (j - radius) * (j - radius) < radius * radius) {
+                    grids[i][j] = pattern;
+                }
+            }
+        }
+    }
+
+
+    public void enlarge() {
+        radius++;
+        fillGrids();
+    }
+
+    ;
+
+    public void shrink() {
+        radius--;
+        fillGrids();
+    }
+
+
+    public int area() {
+        int number = 0;
+        for (int i = 0; i < radius * 2; i++) {
+            for (int j = 0; j < radius * 2; j++) {
+                if (grids[i][j] == pattern) {
+                    number++;
+                }
+            }
+        }
+        return number;
+    }
+    public String toString(){
+        return String.format("Circle: (%d,%d) area=%d pattern=%c", location.getX(),location.getY(),area(),pattern);
+    }
+}

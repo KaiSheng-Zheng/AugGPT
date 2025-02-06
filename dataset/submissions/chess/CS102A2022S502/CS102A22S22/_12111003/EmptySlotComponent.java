@@ -1,0 +1,9 @@
+import java.util.List;
+
+public class EmptySlotComponent extends ChessComponent{
+    public EmptySlotComponent(char name) {super(name);}
+    @Override
+    public List<ChessboardPoint> canMoveTo() {
+        return null;
+    }
+}

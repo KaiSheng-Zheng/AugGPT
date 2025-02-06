@@ -1,0 +1,97 @@
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AvoidConflictShapeCanvas implements ShapeCanvas {
+    private List<Shape> shapes;
+    private char[][] canvas;
+
+    public AvoidConflictShapeCanvas(int rows, int cols) {
+        this.shapes = new ArrayList<>();
+        this.canvas = new char[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                canvas[i][j] = ' ';
+            }
+        }
+    }
+
+    @Override
+    public boolean addShape(int x, int y, char pattern, int... params) {
+        Shape newShape = createShape(pattern, params);
+        if (newShape == null) {
+            return false;
+        }
+
+        if (isShapeWithinBounds(newShape, canvas) && !isShapeOverlapping(newShape, canvas)) {
+            for (int i = 0; i < newShape.getRows(); i++) {
+                for (int j = 0; j < newShape.getColumns(); j++) {
+                    canvas[x + i][y + j] = newShape.getPattern();
+                }
+            }
+            shapes.add(newShape);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int getSpaceGridCount() {
+        int count = 0;
+        for (int i = 0; i < canvas.length; i++) {
+            for (int j = 0; j < canvas[i].length; j++) {
+                if (canvas[i][j] == ' ') {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public int getShapeCount() {
+        return shapes.size();
+    }
+
+    @Override
+    public List<Shape> getShapesByArea() {
+        return null;
+    }
+
+    @Override
+    public List<Shape> getShapesByLocation() {
+        return null;
+    }
+
+    @Override
+    public char[][] getCanvas() {
+        return new char[0][];
+    }
+
+    private Shape createShape(char pattern, int... params) {
+        // 根据pattern创建对应的形状对象，例如Circle或RightTriangle
+        // 这里需要您根据作业要求实现
+    }
+
+    private boolean isShapeWithinBounds(Shape shape, char[][] canvas) {
+        int x = shape.getLocation().getX();
+        int y = shape.getLocation().getY();
+        int rows = shape.getRows();
+        int cols = shape.getColumns();
+        return x >= 0 && x + cols <= canvas.length && y >= 0 && y + rows <= canvas[0].length;
+    }
+
+    private boolean isShapeOverlapping(Shape shape, char[][] canvas) {
+        int x = shape.getLocation().getX();
+        int y = shape.getLocation().getY();
+        for (int i = 0; i < shape.getRows(); i++) {
+            for (int j = 0; j < shape.getColumns(); j++) {
+                if (canvas[x + i][y + j] != ' ') {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+}

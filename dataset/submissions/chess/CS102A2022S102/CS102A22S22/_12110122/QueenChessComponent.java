@@ -1,0 +1,13 @@
+import java.util.List;
+
+public class QueenChessComponent extends ChessComponent{
+
+    public QueenChessComponent(ChessboardPoint source,ChessColor chessColor,char name) {
+        constructor(source,chessColor,name);
+    }
+
+    @Override
+    public List<ChessboardPoint> canMoveTo() {
+        return null;
+    }
+}

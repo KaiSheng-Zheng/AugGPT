@@ -1,0 +1,31 @@
+public class A6 {
+    private static String gridString(char[][] grids) {
+        var sb = new StringBuilder();
+        for (char[] line : grids) {
+            sb.append(line);
+            sb.append("\n");
+        }
+        return sb.toString(); 
+
+
+
+public boolean addShape(int x, int y, char pattern, int... params);
+public int getSpaceGridCount();
+public int getShapeCount();
+public List<Shape> getShapesByArea();
+public List<Shape> getShapesByLocation();
+public char[][] getCanvas();
+
+private List<Shape> shapes;
+private char[][] canvas;
+public AvoidConflictShapeCanvas(int rows, int cols)
+@Override
+public boolean addShape(int x, int y, char pattern, int... params)
+
+
+private List<Shape> shapes;
+private char[][] canvas;
+public OverLapShapeCanvas(int rows, int cols)
+@Override
+    public boolean addShape(int x, int y, char pattern, int... params)
+

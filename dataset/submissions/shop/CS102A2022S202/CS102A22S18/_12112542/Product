@@ -1,0 +1,31 @@
+import java.util.ArrayList;
+
+public class Product {
+    private static int cnt;
+    private int id;
+    private String name;
+    private float price;
+    private ArrayList<Integer> ratings;
+
+    public Product(String name, float price) {
+        this.id = 1;
+        this.name = name;
+        this.price = price;
+    }
+
+    public boolean setRating(int rating) {
+        if (rating != 1 && rating != 2 && rating != 3 && rating != 4 && rating != 5) {
+            return false;
+        }
+        return true;
+    }
+
+    public float getAvgRating() {
+        float avg = 0;
+        return avg ;
+    }
+
+    public String toString(){
+        return String.format("Product ID %d, %s, RMB %.2f, Rating %.1f", id, name, price, getAvgRating());
+    }
+}

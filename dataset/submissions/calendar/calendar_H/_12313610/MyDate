@@ -1,0 +1,28 @@
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
+public class MyDate {
+    private LocalDate date;
+
+    public MyDate(int year, int month, int day) {
+        this.date = LocalDate.of(year, month, day);
+    }
+
+    public LocalDate addDays(int days) {
+        return date.plusDays(days);
+    }
+
+    public String getFormattedDate() {
+        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    public int getDifference(MyDate date2) {
+        if (this.date.isBefore(date2.date)) {
+            return -1; // date1 is earlier than date2, return -1
+        } else if (this.date.isAfter(date2.date)) {
+            return 0; // dates are the same, return 0
+        } else {
+            return ChronoUnit.DAYS.between(this.date, date2.date); // dates are the same or earlier, return difference in days
+        }
+    }
+}

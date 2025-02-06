@@ -1,0 +1,19 @@
+public void vsc(SortBy sortMethod){
+    ArrayList<Product> sc= new ArrayList<Product>();
+    scc.addAll(shoppingCart);
+
+    if(sortMethod == SortBy.Rating){
+        Collections.sort(scc, (b,a) -> Float.compare(b.getAvgRating(),a.getAvgRating()));
+        for(int i = 0; i < scc.size(); i++)
+            System.out.println(scc.get(i));
+    }
+    else if(sortMethod == SortBy.Price){
+        Collections.sort(scc, (b,a) -> Float.compare(b.getPrice(),a.getPrice()));
+        for(int i = 0; i < scc.size(); i++)
+            System.out.println(scc.get(i));
+    }
+    else{
+        for(int i = 0; i < scc.size(); i++)
+            System.out.println(scc.get(i));
+    }
+}

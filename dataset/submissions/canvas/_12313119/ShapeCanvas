@@ -1,0 +1,20 @@
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by FernFlower decompiler)
+//
+
+import java.util.List;
+
+public interface ShapeCanvas {
+    boolean addShape(int var1, int var2, char var3, int... var4);
+
+    int getSpaceGridCount();
+
+    int getShapeCount();
+
+    List<Shape> getShapesByArea();
+
+    List<Shape> getShapesByLocation();
+
+    char[][] getCanvas();
+}

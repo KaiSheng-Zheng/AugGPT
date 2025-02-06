@@ -1,0 +1,94 @@
+package Online_Shopping;
+import java.util.ArrayList;
+
+ class Product {
+    private static int cnt=0;
+    private int id;
+    private String name;
+    private float price;
+    private ArrayList<Integer> ratings = new ArrayList<>();
+
+    public Product(String name,float price){
+        this.name = name;
+        this.price = price;
+        cnt++;
+        id = cnt;
+    }
+
+     public Product(int i, String phone, double v, double v1) {
+         
+     }
+
+
+     public boolean setRating(int rating) {
+         return false;
+     }
+
+     public float getAvgRating() {
+         return 0;
+     }
+
+
+
+
+     public int getCnt(){
+        return cnt;
+    }
+
+    public static void setCnt(int cnt) {
+        Product.cnt = cnt;
+    }
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public float getPrice(){
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+
+
+}
+
+public class ProductTest{
+     public String toString() {
+        return null;
+    }
+    public static void main(String[] args) {
+        Product pd1 = new Product(1,"Phone",7000.00,4.5);
+        Product pd2 = new Product(2,"Laptop",10000.00,4.5);
+        Product pd3 = new Product(3,"Mouse",100.00,3.0);
+        Product pd4 = new Product(4,"Table",300.00,4.3);
+        ArrayList<Product> list = new ArrayList<>();
+        list.add(pd1);
+        list.add(pd2);
+        list.add(pd3);
+        list.add(pd4);
+        System.out.println("");
+        for(int i=0;i< list.size();i++){
+            Product product = list.get(i);
+            System.out.println(product);
+        }
+    }
+
+}
+
+
+

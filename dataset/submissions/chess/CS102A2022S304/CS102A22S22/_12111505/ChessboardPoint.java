@@ -1,0 +1,67 @@
+public class ChessboardPoint {
+    private int x;
+    private int y;
+
+    /**
+     * should design
+     * @param x
+     * @param y
+     */
+    public ChessboardPoint(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    /**
+     * should design
+     * @return
+     */
+    public int getX() {
+        return x;
+    }
+
+    /**
+     * should design
+     * @return
+     */
+    public int getY() {
+        return y;
+    }
+
+    /*
+     * should design
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "("+x + ","+y+")" ;
+
+    }
+
+
+    /**
+     * should design
+     *
+     * @param dx
+     * @param dy
+     * @return
+     */
+    public ChessboardPoint offset(int dx,int dy){
+        if(x+dx>=8||x+dx<0){
+            return null;
+        }
+        if(y+dy>=8||y+dy<0){
+            return null;
+        }
+        return new ChessboardPoint(x+dx,y+dy);
+    }
+    public boolean offset(){
+        if(this.getX()>=8 || this.getX()<0){
+            return true;
+        }
+        if(this.getY()>=8 || this.getY()<0){
+            return true;
+        }
+        return false;
+    }
+}
