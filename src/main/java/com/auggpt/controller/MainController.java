@@ -46,8 +46,7 @@ public class MainController {
         boolean err = false;
 
         log.info("Please enter your OpenAI API key:");
-        String api = "sk-axbE1h6GcG0tEh0L6gesZirm3kpFXx87GWJshgjs4Fv8DTyK";
-//        String api = scanner.next();
+        String api = scanner.next();
 
         MultiAgentManager multiAgentManager = MultiAgentManager.getInstance();
 
@@ -345,7 +344,7 @@ public class MainController {
         boolean err = false;
 
         log.info("Please enter your ChatGPT api key:");
-        String api = "sk-axbE1h6GcG0tEh0L6gesZirm3kpFXx87GWJshgjs4Fv8DTyK";
+        String api = scanner.next();
 
         MultiAgentManager multiAgentManager = MultiAgentManager.getInstance();
 
