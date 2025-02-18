@@ -72,6 +72,6 @@ Check the Java version, especially whether exceed Java 17
 
 ## Reference
 
-This implementation employs a ChatGPT java library to access the OpenAI api service.
+This implementation uses LangChain4j to call APIs in a unified style:
 
-https://github.com/Grt1228/chatgpt-java
+https://github.com/langchain4j/langchain4j
