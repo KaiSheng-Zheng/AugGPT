@@ -1,24 +1,23 @@
 package com.auggpt.model;
 
-import com.unfbx.chatgpt.OpenAiClient;
-import com.unfbx.chatgpt.entity.chat.BaseChatCompletion;
-import com.unfbx.chatgpt.entity.chat.ChatCompletion;
-import com.unfbx.chatgpt.entity.chat.ChatCompletionResponse;
-import com.unfbx.chatgpt.entity.chat.Message;
-import com.unfbx.chatgpt.function.KeyRandomStrategy;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.model.chat.request.ChatRequestParameters;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.openai.OpenAiChatModel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 public class ChatGPTAgentRaw implements Agent {
 
-    private OpenAiClient openAiClient;
-    private ArrayList<String> history = new ArrayList<>();
-    private static String MODEL = BaseChatCompletion.Model.GPT_4o_MINI.getName(); // Default
-    private static final Message system_message = Message.builder().role(Message.Role.SYSTEM).content(PromptType.RAW_AGENT_SET.getPrompt()).build();
+    private OpenAiChatModel openAiClient;
+    private ArrayList<ChatMessage> history = new ArrayList<>();
+    private static final String MODEL = AgentType.GPT_4o_MINI_Raw.getName(); // Default
+    private static final SystemMessage system_message = SystemMessage.from(PromptType.RAW_AGENT_SET.getPrompt());
 
 
     private ChatGPTAgentRaw(){}
@@ -63,8 +62,11 @@ public class ChatGPTAgentRaw implements Agent {
     @Override
     public String reGenerate(ArrayList<String> responses,
                              ArrayList<Integer> respPointer) {
-        String user_msg = history.get(history.size()-1);
-//        String gpt_msg = history.get(history.size()-1);
+        ChatMessage message = history.get(history.size()-1);
+        String user_msg = " ";
+        if(message instanceof UserMessage){
+            user_msg = ((UserMessage) message).singleText();
+        }
 
         String prefix = "{role:user,history_content:";
         user_msg = user_msg.substring(user_msg.indexOf(prefix)+prefix.length(),user_msg.lastIndexOf("}"));
@@ -72,23 +74,30 @@ public class ChatGPTAgentRaw implements Agent {
     }
 
     @Override
-    public ArrayList<String> getHistory() {
+    public ArrayList<ChatMessage> getHistory() {
         return history;
     }
 
     public void initializeChatService(String api){
-        openAiClient = OpenAiClient.builder()
-                .apiKey(Arrays.asList(api))
-                .keyStrategy(new KeyRandomStrategy())
-                .apiHost("https://api.chatanywhere.tech")
+        openAiClient = OpenAiChatModel.builder()
+                .apiKey(api)
+                .defaultRequestParameters(ChatRequestParameters.builder()
+                        .modelName(MODEL)
+                        .temperature(1.0)
+                        .topP(1.0)
+                        .build())
+                .baseUrl("https://api.chatanywhere.tech")
                 .build();
     }
     public void initializeChatService(String api, String model){
-        MODEL = model;
-        openAiClient = OpenAiClient.builder()
-                .apiKey(Arrays.asList(api))
-                .keyStrategy(new KeyRandomStrategy())
-                .apiHost("https://api.chatanywhere.tech")
+        openAiClient = OpenAiChatModel.builder()
+                .apiKey(api)
+                .defaultRequestParameters(ChatRequestParameters.builder()
+                        .modelName(MODEL)
+                        .temperature(1.0)
+                        .topP(1.0)
+                        .build())
+                .baseUrl("https://api.chatanywhere.tech")
                 .build();
     }
 
@@ -102,22 +111,19 @@ public class ChatGPTAgentRaw implements Agent {
             }
         }
 
-        Message message = Message.builder().role(Message.Role.USER).content(history.toString()+"\n\n"+msg).build();
-        ChatCompletion chatCompletion = ChatCompletion.builder()
-                .messages(List.of(system_message,message))
-                .temperature(1.0)
-                .topP(1.0)
-                .model(MODEL)
-                .build();
+        UserMessage userMessage = UserMessage.from(msg);
 
-        ChatCompletionResponse chatCompletionResponse;
+        ChatMessage[] sendMessages = new ChatMessage[history.size()+1];
+        sendMessages = history.toArray(sendMessages);
+        sendMessages[sendMessages.length-1] = userMessage;
 
         int cnt = 0;
         ArrayList<String> resp = new ArrayList<>();
+        ChatResponse chatResponse;
         while(true) {
             try {
                 cnt++;
-                chatCompletionResponse = openAiClient.chatCompletion(chatCompletion);
+                chatResponse = openAiClient.chat(sendMessages);
                 break;
             } catch (RuntimeException e) {
                 log.warn("Timeout",e);
@@ -134,14 +140,10 @@ public class ChatGPTAgentRaw implements Agent {
             }
         }
 
+        AiMessage responseMsg = chatResponse.aiMessage();
+        resp.add(responseMsg.text());
+        history.add(userMessage);
 
-
-        chatCompletionResponse.getChoices().forEach(e -> {
-            System.out.println(e.getMessage().getContent());
-            resp.add(e.getMessage().getContent());
-            history.add(String.format("{role:user,history_content:%s}",msg));
-//            history.add(String.format("{role:ChatGPT,history_content:%s}",e.getMessage().getContent()));
-        });
         return resp;
     }
     public boolean close(){

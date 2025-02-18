@@ -1,5 +1,7 @@
 package com.auggpt.model;
 
+import dev.langchain4j.data.message.ChatMessage;
+
 import java.util.ArrayList;
 
 public interface Agent {
@@ -13,6 +15,6 @@ public interface Agent {
     String reGenerate(ArrayList<String> responses,
                       ArrayList<Integer> respPointer);
 
-    ArrayList<String> getHistory();
+    ArrayList<ChatMessage> getHistory();
     boolean close();
 }

@@ -6,6 +6,8 @@ import com.unfbx.chatgpt.entity.chat.ChatCompletion;
 import com.unfbx.chatgpt.entity.chat.ChatCompletionResponse;
 import com.unfbx.chatgpt.entity.chat.Message;
 import com.unfbx.chatgpt.function.KeyRandomStrategy;
+import dev.ai4j.openai4j.chat.Message;
+import dev.langchain4j.data.message.ChatMessage;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
@@ -71,7 +73,7 @@ public class ChatGPTAgent implements Agent {
     }
 
     @Override
-    public ArrayList<String> getHistory() {
+    public ArrayList<ChatMessage> getHistory() {
         return history;
     }
 
