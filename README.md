@@ -69,6 +69,11 @@ Checklist:
 
 Check the Java version, especially whether exceed Java 17
 
+## TODO
+
+- [ ] Migrate the chatgpt api to Langchain4j.
+- [ ] idea plugin based on this repo.
+
 
 ## Reference
 
