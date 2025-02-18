@@ -4,6 +4,7 @@ import com.auggpt.model.Agent;
 import com.auggpt.model.AgentType;
 import com.auggpt.model.ChatGPTAgent;
 import com.auggpt.model.ChatGPTAgentRaw;
+import dev.langchain4j.data.message.ChatMessage;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class MultiAgentManager {
                 .orElse(null);
     }
 
-    public ArrayList<String> getHistory(String name){
+    public ArrayList<ChatMessage> getHistory(String name){
         return Optional.ofNullable(getAgent(name))
                 .map(Agent::getHistory)
                 .orElse(null);

@@ -1,27 +1,24 @@
 package com.auggpt.model;
 
-import com.unfbx.chatgpt.OpenAiClient;
-import com.unfbx.chatgpt.entity.chat.BaseChatCompletion;
-import com.unfbx.chatgpt.entity.chat.ChatCompletion;
-import com.unfbx.chatgpt.entity.chat.ChatCompletionResponse;
-import com.unfbx.chatgpt.entity.chat.Message;
-import com.unfbx.chatgpt.function.KeyRandomStrategy;
-import dev.ai4j.openai4j.chat.Message;
+import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
+import dev.langchain4j.data.message.SystemMessage;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.model.chat.request.ChatRequestParameters;
+import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.openai.OpenAiChatModel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 public class ChatGPTAgent implements Agent {
 
-    private OpenAiClient openAiClient;
-    private ArrayList<String> history = new ArrayList<>();
-    private static String MODEL = BaseChatCompletion.Model.GPT_4o_MINI.getName(); // Default
+    private OpenAiChatModel openAiClient;
+    private ArrayList<ChatMessage> history = new ArrayList<>();
+    private static final String MODEL = AgentType.GPT_4o_MINI.getName(); // Default
     private ChatGPTAgent(){}
     public ChatGPTAgent(String api){
         initializeChatService(api);
@@ -64,7 +61,11 @@ public class ChatGPTAgent implements Agent {
     @Override
     public String reGenerate(ArrayList<String> responses,
                              ArrayList<Integer> respPointer) {
-        String user_msg = history.get(history.size()-2);
+        ChatMessage message = history.get(history.size()-1);
+        String user_msg = " ";
+        if(message instanceof UserMessage){
+            user_msg = ((UserMessage) message).singleText();
+        }
 //        String gpt_msg = history.get(history.size()-1);
 
         String prefix = "{role:user,history_content:";
@@ -78,18 +79,25 @@ public class ChatGPTAgent implements Agent {
     }
 
     public void initializeChatService(String api){
-        openAiClient = OpenAiClient.builder()
-                .apiKey(Arrays.asList(api))
-                .keyStrategy(new KeyRandomStrategy())
-                .apiHost("https://api.chatanywhere.tech")
+        openAiClient = OpenAiChatModel.builder()
+                .apiKey(api)
+                .defaultRequestParameters(ChatRequestParameters.builder()
+                        .modelName(MODEL)
+                        .temperature(1.0)
+                        .topP(1.0)
+                        .build())
+                .baseUrl("https://api.chatanywhere.tech")
                 .build();
     }
     public void initializeChatService(String api, String model){
-        MODEL = model;
-        openAiClient = OpenAiClient.builder()
-                .apiKey(Arrays.asList(api))
-                .keyStrategy(new KeyRandomStrategy())
-                .apiHost("https://api.chatanywhere.tech")
+        openAiClient = OpenAiChatModel.builder()
+                .apiKey(api)
+                .defaultRequestParameters(ChatRequestParameters.builder()
+                        .modelName(MODEL)
+                        .temperature(1.0)
+                        .topP(1.0)
+                        .build())
+                .baseUrl("https://api.chatanywhere.tech")
                 .build();
     }
 
@@ -107,24 +115,23 @@ public class ChatGPTAgent implements Agent {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         String today = currentDate.format(formatter);
 
-        Message system_message = Message.builder().role(Message.Role.SYSTEM).content(PromptType.GENERAL_AGENT_SET.getPrompt().replace("<DATE>",today)).build();
-
-        Message message = Message.builder().role(Message.Role.USER).content(history.toString()+"\n\n"+msg).build();
-        ChatCompletion chatCompletion = ChatCompletion.builder()
-                .messages(List.of(system_message,message))
-                .model(MODEL)
-                .temperature(0.95)
-                .topP(0.75)
-                .build();
-
-        ChatCompletionResponse chatCompletionResponse;
+        SystemMessage systemMessage = SystemMessage.from(PromptType.GENERAL_AGENT_SET.getPrompt().replace("<DATE>",today));
+        UserMessage userMessage = UserMessage.from(msg);
+        ChatMessage[] sendMessages = new ChatMessage[history.size()+2];
+        sendMessages[0] = systemMessage;
+        for (int i = 0;i<history.size();i++){
+            sendMessages[i+1] = history.get(i);
+        }
+        sendMessages[sendMessages.length-1] = userMessage;
 
         int cnt = 0;
         ArrayList<String> resp = new ArrayList<>();
+        ChatResponse chatResponse;
+
         while(true) {
             try {
                 cnt++;
-                chatCompletionResponse = openAiClient.chatCompletion(chatCompletion);
+                chatResponse = openAiClient.chat(sendMessages);
                 break;
             } catch (RuntimeException e) {
                 log.warn("Timeout",e);
@@ -141,15 +148,20 @@ public class ChatGPTAgent implements Agent {
             }
         }
 
+        AiMessage responseMsg = chatResponse.aiMessage();
+        resp.add(responseMsg.text());
+        history.add(userMessage);
 
-
-        chatCompletionResponse.getChoices().forEach(e -> {
-            System.out.println(e.getMessage().getContent());
-            resp.add(e.getMessage().getContent());
-            history.add(String.format("{role:user,history_content:%s}",msg));
-//            history.add(String.format("{role:ChatGPT,history_content:%s}",e.getMessage().getContent()));
-        });
         return resp;
+
+
+//        chatCompletionResponse.getChoices().forEach(e -> {
+//            System.out.println(e.getMessage().getContent());
+//            resp.add(e.getMessage().getContent());
+//            history.add(String.format("{role:user,history_content:%s}",msg));
+////            history.add(String.format("{role:ChatGPT,history_content:%s}",e.getMessage().getContent()));
+//        });
+//        return resp;
     }
     public boolean close(){
         openAiClient = null;
