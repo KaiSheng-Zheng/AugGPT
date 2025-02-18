@@ -1,7 +1,5 @@
 # AugGPT - Automatic Unit Test Generation Tool
 
-<a href="https://doi.org/10.5281/zenodo.14826333"><img src="https://zenodo.org/badge/928230839.svg" alt="DOI"></a>
-
 This is an implementation of the paper:
 Automatic Unit Test Generation for Programming Assignments
 Using Large Language Models. Check [README-Test.md](README-Test.md)
@@ -68,6 +66,11 @@ Checklist:
 ### PITest (mutation test) result output successfully but all metrics are zero
 
 Check the Java version, especially whether exceed Java 17
+
+## TODO
+
+- [ ] Migrate the chatgpt api to Langchain4j.
+- [ ] idea plugin based on this repo.
 
 
 ## Reference
