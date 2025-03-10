@@ -1,9 +1,9 @@
 package com.auggpt;
 
-import com.auggpt.service.CompileService;
-import com.auggpt.service.EvaluationService;
-import com.auggpt.service.FailRecordTestListener;
-import com.auggpt.utils.IOUtils;
+import com.auggpt.backend.service.CompileService;
+import com.auggpt.backend.service.EvaluationService;
+import com.auggpt.backend.service.FailRecordTestListener;
+import com.auggpt.backend.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.launcher.Launcher;
@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static com.auggpt.utils.IOUtils.*;
+import static com.auggpt.backend.utils.IOUtils.*;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
 public class CaseStudyResult {

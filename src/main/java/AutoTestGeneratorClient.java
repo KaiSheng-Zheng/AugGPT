@@ -1,4 +1,4 @@
-import com.auggpt.controller.MainController;
+import com.auggpt.backend.controller.MainController;
 
 public class AutoTestGeneratorClient {
     public static void main(String[] args) {

@@ -1,21 +1,19 @@
 package com.auggpt;
 
 
-import com.auggpt.service.EvaluationService;
-import com.auggpt.service.JunitTester;
-import com.auggpt.utils.IOUtils;
+import com.auggpt.backend.service.EvaluationService;
+import com.auggpt.backend.utils.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static com.auggpt.service.CompileService.compile;
-import static com.auggpt.utils.IOUtils.cleanUp;
-import static com.auggpt.utils.IOUtils.getPropertiesString;
+import static com.auggpt.backend.service.CompileService.compile;
+import static com.auggpt.backend.utils.IOUtils.cleanUp;
+import static com.auggpt.backend.utils.IOUtils.getPropertiesString;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
