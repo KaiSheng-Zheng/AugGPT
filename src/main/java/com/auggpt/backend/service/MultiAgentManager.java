@@ -3,7 +3,7 @@ package com.auggpt.backend.service;
 import com.auggpt.backend.model.Agent;
 import com.auggpt.backend.model.AgentType;
 import com.auggpt.backend.model.ChatGPTAgent;
-import com.auggpt.backend.model.ChatGPTAgentRaw;
+import com.auggpt.backend.model.OllamaAgent;
 import dev.langchain4j.data.message.ChatMessage;
 
 import org.apache.logging.log4j.LogManager;
@@ -42,10 +42,16 @@ public class MultiAgentManager {
             return true;
         }
         else if(2000<=agentType.getCode() && agentType.getCode()<2100){
-            Agent agent = new ChatGPTAgentRaw(api);
+            Agent agent = new OllamaAgent(api);
             agents.put(name,agent);
             return true;
         }
+//        else if(2000<=agentType.getCode() && agentType.getCode()<2100){
+//            Agent agent = new ChatGPTAgentRaw(api);
+//            agents.put(name,agent);
+//            return true;
+
+//        }
         else {
             log.error("Exception happened when trying to put an agent. " +
                     "The params are: \n name:{}\nagentType:{}\napi:{}",name,agentType,api);

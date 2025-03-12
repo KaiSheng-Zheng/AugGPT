@@ -16,6 +16,7 @@
         <retrofit2.version>2.9.0</retrofit2.version>
         <slf4j.version>2.0.6</slf4j.version>
         <Javafx.version>12.0.2</Javafx.version>
+        <langchain4j.version>1.0.0-beta1</langchain4j.version>
     </properties>
 
     <dependencies>
@@ -176,10 +177,25 @@
             <version>1.18.1</version>
         </dependency>
 
+<!--        LangChain4j      -->
+
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-open-ai</artifactId>
-            <version>1.0.0-beta1</version>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-ollama</artifactId>
+            <version>${langchain4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>ollama</artifactId>
+            <version>1.19.7</version>
         </dependency>
 
 <!--        Frontend      -->
@@ -341,8 +357,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
             <plugin>

@@ -6,7 +6,6 @@ import com.auggpt.backend.utils.IOUtils;
 import com.auggpt.backend.utils.MiscUtils;
 import com.auggpt.backend.utils.PromptUtils;
 import com.auggpt.backend.utils.TestClassFileBuilder;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +19,6 @@ import static com.auggpt.backend.service.CompileService.compile;
 import static com.auggpt.backend.utils.IOUtils.*;
 import static com.auggpt.backend.utils.MiscUtils.countTests;
 import static com.auggpt.backend.utils.PDFParser.parsePDFtoString;
-import static com.auggpt.backend.utils.TestClassFileBuilder.splitCode;
-import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class MainController {
@@ -36,10 +33,20 @@ public class MainController {
     private final String NAME = "Agent1";
     public String api = null;
 
-    public MainController(){}
+    public void setPDFPath(String path){
+        systemProperties.put("pdfInputPath",path);
+        log.info("document input path changed to: {}",path);
+    }
 
-    public void setApi(String api){
-        this.api = api;
+    public void setProgramRootPath(String path){
+        systemProperties.put("programRootPath",path);
+        log.info("program root directory path changed to: {}",path);
+    }
+
+    public MainController(){
+        systemProperties = new HashMap<>();
+        autogen = ResourceBundle.getBundle("auggpt", Locale.getDefault());
+        loadSystemProperties();
     }
 
     /**
@@ -53,7 +60,7 @@ public class MainController {
 
         boolean err = false;
 
-        log.info("Please enter your OpenAI API key:");
+//        log.info("Please enter your OpenAI API key:");
 //        String api = scanner.next();
 
         MultiAgentManager multiAgentManager = MultiAgentManager.getInstance();
@@ -63,10 +70,6 @@ public class MainController {
 
         log.info("Agent service initialize success!");
         //1. read configuration
-        systemProperties = new HashMap<>();
-        autogen = ResourceBundle.getBundle("auggpt", Locale.getDefault());
-        loadSystemProperties();
-
         initialize();
 
         //2.1 compile source program
@@ -76,7 +79,7 @@ public class MainController {
         CHECKERR(err);
 
         //2.2 read pdf
-        String PDFContent = parsePDFtoString(getPropertiesString(autogen, "pdfInputPath"));
+        String PDFContent = parsePDFtoString(systemProperties.get("pdfInputPath"));
 
         evaluationService =
                 EvaluationService.getInstance(systemProperties);
@@ -334,129 +337,129 @@ public class MainController {
         return failToImprove;
     }
 
-    /**
-     * Plain approach
-     */
-    public void plain() {
-        //0. Launch message
-        log.info(FancyOutput.SYSTEM_LAUNCH.getStr());
-        log.info("System is launched at: " + MiscUtils.getNow());
-        log.info("The system is running with plain approach!");
-
-        systemProperties = new HashMap<>();
-        autogen = ResourceBundle.getBundle("auggpt", Locale.getDefault());
-        loadSystemProperties();
-
-        initialize();
-
-        boolean err = false;
-
-//        log.info("Please enter your ChatGPT api key:");
-//        String api = this.api;
-
-        MultiAgentManager multiAgentManager = MultiAgentManager.getInstance();
-
-        err = multiAgentManager.putAgent(NAME, AgentType.GPT_4o_MINI, api);
-        CHECKERR(err);
-
-        log.info("CharGPT service initialize success!");
-
-        cleanUp(systemProperties.get("targetPath"),false);
-        err = compile(systemProperties.get("programRootPath"), systemProperties.get("libPath"),
-                systemProperties.get("targetPath"), systemProperties.get("programRootPath"));
-        CHECKERR(err);
-
-        evaluationService =
-                EvaluationService.getInstance(systemProperties);
-
-        ArrayList<Integer> respPointer = new ArrayList<>();
-        ArrayList<String> responses = new ArrayList<>();
-
-        String msg = "";
-        String response = "";
-
-        File file = new File(systemProperties.get("programRootPath"));
-        File[] fileList = file.listFiles();
-        ArrayList<File> targets = new ArrayList<>();
-        for (File f:fileList) {
-            if (f.isFile() && f.getName().endsWith(".java")){
-                targets.add(f);
-            }
-        }
-        if (targets.isEmpty()){
-            log.warn("Program root does not contain .java files");
-            return;
-        }
-
-        int ptr = 0;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < targets.size(); i++) {
-            sb.append(IOUtils.readFile(targets.get(ptr++).getAbsolutePath()));
-        }
-        msg = PromptUtils.prompting(List.of(sb.toString()), PromptType.PLAIN_GET_CODE);
-
-        response = multiAgentManager.chat(NAME, msg, responses, respPointer);
-
-
-        ArrayList<ArrayList<String>> respss = new ArrayList<>();
-        respss.add(MiscUtils.codeBlockFormatterList(response));
-
-        for (int i = 0; i < 4; i++) {
-            msg = PromptUtils.prompting(List.of(),PromptType.PLAIN_REFINE);
-            response = multiAgentManager.chat(NAME,msg,responses,respPointer);
-            respss.add(MiscUtils.codeBlockFormatterList(response));
-        }
-
-        cleanUp(systemProperties.get("GPTTestPath"),true);
-        for (ArrayList<String> resps : respss) {
-            for (String content : resps) {
-                splitCode(content, systemProperties.get("GPTTestPath"));
-            }
-        }
-
-        //5. output and cleanup
-        multiAgentManager.closeAll();
-
-        cleanUp(systemProperties.get("targetPath"),true);
-        compile(systemProperties.get("programRootPath"),systemProperties.get("libPath"),
-                systemProperties.get("targetPath"),systemProperties.get("programRootPath"),systemProperties);
-
-        cleanUp(systemProperties.get("testPath"),true);
-        compile(systemProperties.get("targetPath"),systemProperties.get("libPath"),
-                systemProperties.get("testPath"),systemProperties.get("GPTTestPath"),systemProperties);
-
-        JunitTester tester = new JunitTester(systemProperties);
-        try{
-            tester.launch();
-        } catch (MalformedURLException ignored) {
-        }
-
-        cleanUp(systemProperties.get("targetPath"),true);
-        cleanUp(systemProperties.get("testPath"),true);
+//    /**
+//     * Plain approach
+//     */
+//    public void plain() {
+//        //0. Launch message
+//        log.info(FancyOutput.SYSTEM_LAUNCH.getStr());
+//        log.info("System is launched at: " + MiscUtils.getNow());
+//        log.info("The system is running with plain approach!");
 //
-        compile(systemProperties.get("programRootPath"),systemProperties.get("libPath"),
-                systemProperties.get("targetPath"),systemProperties.get("programRootPath"),systemProperties);
-
-        compile(systemProperties.get("targetPath"),systemProperties.get("libPath"),
-                systemProperties.get("testPath"),systemProperties.get("GPTTestPath"),systemProperties);
-
-        File tests = new File(systemProperties.get("testPath"));
-        if (tests.listFiles().length<1){
-            fail("Compile failed");
-        }
-
-        try{
-            evaluationService.evaluateTest(202);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-
-        log.info("Finish generation. Please check the test files at {}\n",systemProperties.get("GPTTestPath"));
-        log.info("-----------------------------------------------");
-        System.exit(0);
-
-    }
+//        systemProperties = new HashMap<>();
+//        autogen = ResourceBundle.getBundle("auggpt", Locale.getDefault());
+//        loadSystemProperties();
+//
+//        initialize();
+//
+//        boolean err = false;
+//
+////        log.info("Please enter your ChatGPT api key:");
+////        String api = this.api;
+//
+//        MultiAgentManager multiAgentManager = MultiAgentManager.getInstance();
+//
+//        err = multiAgentManager.putAgent(NAME, AgentType.GPT_4o_MINI, api);
+//        CHECKERR(err);
+//
+//        log.info("CharGPT service initialize success!");
+//
+//        cleanUp(systemProperties.get("targetPath"),false);
+//        err = compile(systemProperties.get("programRootPath"), systemProperties.get("libPath"),
+//                systemProperties.get("targetPath"), systemProperties.get("programRootPath"));
+//        CHECKERR(err);
+//
+//        evaluationService =
+//                EvaluationService.getInstance(systemProperties);
+//
+//        ArrayList<Integer> respPointer = new ArrayList<>();
+//        ArrayList<String> responses = new ArrayList<>();
+//
+//        String msg = "";
+//        String response = "";
+//
+//        File file = new File(systemProperties.get("programRootPath"));
+//        File[] fileList = file.listFiles();
+//        ArrayList<File> targets = new ArrayList<>();
+//        for (File f:fileList) {
+//            if (f.isFile() && f.getName().endsWith(".java")){
+//                targets.add(f);
+//            }
+//        }
+//        if (targets.isEmpty()){
+//            log.warn("Program root does not contain .java files");
+//            return;
+//        }
+//
+//        int ptr = 0;
+//        StringBuilder sb = new StringBuilder();
+//        for (int i = 0; i < targets.size(); i++) {
+//            sb.append(IOUtils.readFile(targets.get(ptr++).getAbsolutePath()));
+//        }
+//        msg = PromptUtils.prompting(List.of(sb.toString()), PromptType.PLAIN_GET_CODE);
+//
+//        response = multiAgentManager.chat(NAME, msg, responses, respPointer);
+//
+//
+//        ArrayList<ArrayList<String>> respss = new ArrayList<>();
+//        respss.add(MiscUtils.codeBlockFormatterList(response));
+//
+//        for (int i = 0; i < 4; i++) {
+//            msg = PromptUtils.prompting(List.of(),PromptType.PLAIN_REFINE);
+//            response = multiAgentManager.chat(NAME,msg,responses,respPointer);
+//            respss.add(MiscUtils.codeBlockFormatterList(response));
+//        }
+//
+//        cleanUp(systemProperties.get("GPTTestPath"),true);
+//        for (ArrayList<String> resps : respss) {
+//            for (String content : resps) {
+//                splitCode(content, systemProperties.get("GPTTestPath"));
+//            }
+//        }
+//
+//        //5. output and cleanup
+//        multiAgentManager.closeAll();
+//
+//        cleanUp(systemProperties.get("targetPath"),true);
+//        compile(systemProperties.get("programRootPath"),systemProperties.get("libPath"),
+//                systemProperties.get("targetPath"),systemProperties.get("programRootPath"),systemProperties);
+//
+//        cleanUp(systemProperties.get("testPath"),true);
+//        compile(systemProperties.get("targetPath"),systemProperties.get("libPath"),
+//                systemProperties.get("testPath"),systemProperties.get("GPTTestPath"),systemProperties);
+//
+//        JunitTester tester = new JunitTester(systemProperties);
+//        try{
+//            tester.launch();
+//        } catch (MalformedURLException ignored) {
+//        }
+//
+//        cleanUp(systemProperties.get("targetPath"),true);
+//        cleanUp(systemProperties.get("testPath"),true);
+////
+//        compile(systemProperties.get("programRootPath"),systemProperties.get("libPath"),
+//                systemProperties.get("targetPath"),systemProperties.get("programRootPath"),systemProperties);
+//
+//        compile(systemProperties.get("targetPath"),systemProperties.get("libPath"),
+//                systemProperties.get("testPath"),systemProperties.get("GPTTestPath"),systemProperties);
+//
+//        File tests = new File(systemProperties.get("testPath"));
+//        if (tests.listFiles().length<1){
+//            fail("Compile failed");
+//        }
+//
+//        try{
+//            evaluationService.evaluateTest(202);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//
+//        log.info("Finish generation. Please check the test files at {}\n",systemProperties.get("GPTTestPath"));
+//        log.info("-----------------------------------------------");
+//        System.exit(0);
+//
+//    }
 
 
     public String testPreprocess(TestClassFileBuilder builder) {
