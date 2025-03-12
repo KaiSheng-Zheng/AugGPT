@@ -6,10 +6,8 @@ import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.ollama.OllamaChatModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +18,7 @@ public abstract class BaseAgent implements Agent{
     private final static Logger log = LogManager.getLogger("Log");
     ChatLanguageModel chatModel;
     private ArrayList<ChatMessage> history = new ArrayList<>();
-    public abstract void initializeChatService(@NotNull String model);
+    public abstract void initializeChatService(String api);
     /**
      * A wrapper of .chat(String msg) method.
      * @param prompt

@@ -68,8 +68,7 @@ public class MainUIController {
         logTextArea.setWrapText(true);
 
         controller = new MainController();
-        Log4j2CapturerUtils.captureLogs("Log");
-        logEvents = Log4j2CapturerUtils.getCapturedLogs();
+        startLogListener();
         System.out.println("initialized");
     }
 
@@ -82,6 +81,8 @@ public class MainUIController {
     }
 
     private void startLogListener() {
+        Log4j2CapturerUtils.captureLogs("Log");
+        logEvents = Log4j2CapturerUtils.getCapturedLogs();
         logThread = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
@@ -109,6 +110,7 @@ public class MainUIController {
         File selectedFile = fileChooser.showOpenDialog(docPathBtn.getScene().getWindow());
         if (selectedFile != null) {
             docPathTextField.setText(selectedFile.getAbsolutePath());
+            controller.setPDFPath(selectedFile.getAbsolutePath());
         } else {
             docPathTextField.setText("Not selected yet");
         }
@@ -123,21 +125,15 @@ public class MainUIController {
         File selectedFile = directoryChooser.showDialog(codePathBtn.getScene().getWindow());
         if (selectedFile != null) {
             codePathTextField.setText(selectedFile.getAbsolutePath());
+            controller.setProgramRootPath(selectedFile.getAbsolutePath());
         } else {
             codePathTextField.setText("Not selected yet");
         }
     }
 
-
-    private boolean logListenerStarted = false;
-
     @FXML
     protected void launchController(){
         try{
-            if (!logListenerStarted) {
-                startLogListener();
-                logListenerStarted = true;
-            }
             controller.launch();
         } catch (Exception e){
             log.error(e);

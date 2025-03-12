@@ -6,7 +6,6 @@ import com.auggpt.backend.utils.IOUtils;
 import com.auggpt.backend.utils.MiscUtils;
 import com.auggpt.backend.utils.PromptUtils;
 import com.auggpt.backend.utils.TestClassFileBuilder;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,8 +19,6 @@ import static com.auggpt.backend.service.CompileService.compile;
 import static com.auggpt.backend.utils.IOUtils.*;
 import static com.auggpt.backend.utils.MiscUtils.countTests;
 import static com.auggpt.backend.utils.PDFParser.parsePDFtoString;
-import static com.auggpt.backend.utils.TestClassFileBuilder.splitCode;
-import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class MainController {
@@ -36,10 +33,20 @@ public class MainController {
     private final String NAME = "Agent1";
     public String api = null;
 
-    public MainController(){}
+    public void setPDFPath(String path){
+        systemProperties.put("pdfInputPath",path);
+        log.info("document input path changed to: {}",path);
+    }
 
-    public void setApi(String api){
-        this.api = api;
+    public void setProgramRootPath(String path){
+        systemProperties.put("programRootPath",path);
+        log.info("program root directory path changed to: {}",path);
+    }
+
+    public MainController(){
+        systemProperties = new HashMap<>();
+        autogen = ResourceBundle.getBundle("auggpt", Locale.getDefault());
+        loadSystemProperties();
     }
 
     /**
@@ -53,7 +60,7 @@ public class MainController {
 
         boolean err = false;
 
-        log.info("Please enter your OpenAI API key:");
+//        log.info("Please enter your OpenAI API key:");
 //        String api = scanner.next();
 
         MultiAgentManager multiAgentManager = MultiAgentManager.getInstance();
@@ -63,10 +70,6 @@ public class MainController {
 
         log.info("Agent service initialize success!");
         //1. read configuration
-        systemProperties = new HashMap<>();
-        autogen = ResourceBundle.getBundle("auggpt", Locale.getDefault());
-        loadSystemProperties();
-
         initialize();
 
         //2.1 compile source program
@@ -76,7 +79,7 @@ public class MainController {
         CHECKERR(err);
 
         //2.2 read pdf
-        String PDFContent = parsePDFtoString(getPropertiesString(autogen, "pdfInputPath"));
+        String PDFContent = parsePDFtoString(systemProperties.get("pdfInputPath"));
 
         evaluationService =
                 EvaluationService.getInstance(systemProperties);
