@@ -3,7 +3,9 @@ package com.auggpt.backend.utils;
 import com.auggpt.backend.service.CompileService;
 import com.auggpt.backend.model.Code;
 import com.auggpt.backend.model.Ignore;
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -15,8 +17,9 @@ import java.util.regex.Pattern;
 
 import static com.auggpt.backend.service.CompileService.compile;
 
-@Slf4j
+
 public class IOUtils {
+    private final static Logger log = LogManager.getLogger("Log");
 
     public static void setLogging(boolean logging) {
         IOUtils.logging = logging;

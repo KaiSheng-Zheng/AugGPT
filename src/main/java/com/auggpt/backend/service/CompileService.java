@@ -3,7 +3,9 @@ package com.auggpt.backend.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.auggpt.backend.utils.IOUtils;
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.tools.*;
 import java.io.File;
@@ -15,8 +17,8 @@ import java.util.*;
 
 import static com.auggpt.backend.utils.IOUtils.deleteOtherFiles;
 
-@Slf4j
 public class CompileService {
+    private final static Logger log = LogManager.getLogger("Log");
 
     private static final Set<String> compileInformation = new HashSet<>();
     private static boolean first = false;

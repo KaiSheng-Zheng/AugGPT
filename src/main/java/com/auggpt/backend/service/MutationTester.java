@@ -1,6 +1,7 @@
 package com.auggpt.backend.service;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,15 +21,16 @@ import java.util.regex.Pattern;
 import static com.auggpt.backend.service.CompileService.compile;
 import static com.auggpt.backend.utils.CommandLineUtils.run_cmd;
 import static com.auggpt.backend.utils.IOUtils.*;
-import static com.auggpt.backend.utils.IOUtils.cleanUp;
 import static com.auggpt.backend.utils.MiscUtils.findNum;
 
-@Slf4j
+
 public class MutationTester {
 
     private HashMap<String,String> systemProperties;
     private boolean mutationTestLaunchFlag = false;
     public HashMap<String,Double> mutationResults = new HashMap<>();
+
+    private final static Logger log = LogManager.getLogger("Log");
 
 
     // ******************

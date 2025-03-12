@@ -1,6 +1,8 @@
 package com.auggpt.backend.utils;
 
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.pdfbox.io.RandomAccessBufferedFileInputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -9,8 +11,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-@Slf4j
 public class PDFParser {
+    private final static Logger log = LogManager.getLogger("Log");
 
     public static String parsePDFtoString(String filePath){
         String result;

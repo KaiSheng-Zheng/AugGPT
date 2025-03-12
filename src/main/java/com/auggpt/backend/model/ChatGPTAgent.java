@@ -7,14 +7,16 @@ import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.openai.OpenAiChatModel;
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-@Slf4j
 public class ChatGPTAgent implements Agent {
+    private final static Logger log = LogManager.getLogger("Log");
 
     private OpenAiChatModel openAiClient;
     private ArrayList<ChatMessage> history = new ArrayList<>();

@@ -2,7 +2,9 @@ package com.auggpt.backend.service;
 
 import com.auggpt.backend.exception.MethodNotImplementException;
 import com.auggpt.backend.model.Code;
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +17,8 @@ import static com.auggpt.backend.utils.IOUtils.getClassesNames;
 import static com.auggpt.backend.utils.IOUtils.*;
 import static com.auggpt.backend.utils.MiscUtils.*;
 
-@Slf4j
 public class EvaluationService {
+    private final static Logger log = LogManager.getLogger("Log");
     private final static EvaluationService EVALUATION_SERVICE = new EvaluationService();
     private static HashMap<String,String> systemProperties;
     private static MutationTester mutationTester;

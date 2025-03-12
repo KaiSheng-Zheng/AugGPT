@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.14-internal"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auggpt.frontend.MainController">
+    <VBox spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <HBox spacing="10.0">
+            <Label fx:id="inputLabel" text="Input Settings" />
+        </HBox>
+        <VBox spacing="10.0">
+            <children>
+                <HBox>
+                    <children>
+                        <Label fx:id="docPathLabel" prefHeight="15.0" prefWidth="79.0" text="Doc Path:" />
+                        <TextField fx:id="docPathTextField" prefHeight="23.0" prefWidth="577.0" />
+                        <Button fx:id="docPathBtn" prefHeight="23.0" prefWidth="145.0" text="Select Doc Path..." />
+                    </children>
+                </HBox>
+                <HBox>
+                    <children>
+
+                        <Label fx:id="codePathLabel" prefHeight="15.0" prefWidth="72.0" text="Code Path:" />
+                        <TextField fx:id="codePathTextField" prefHeight="23.0" prefWidth="571.0" />
+                        <Button fx:id="codePathBtn" prefHeight="23.0" prefWidth="140.0" text="Select Code Path..." />
+                    </children></HBox>
+                <HBox>
+                    <children>
+
+                        <Label fx:id="apiKeyLabel" prefHeight="15.0" prefWidth="72.0" text="API Key:" />
+                        <TextField fx:id="apiKeyTextField" prefHeight="23.0" prefWidth="571.0" promptText="Enter API Key (Ubuntu format)" />
+                        <Button fx:id="launchBtn" prefHeight="23.0" prefWidth="137.0" text="Launch" />
+                    </children></HBox>
+            </children></VBox>
+
+        <HBox spacing="10.0">
+            <Label text="Main Panel" />
+        </HBox>
+        <HBox prefHeight="385.0" prefWidth="780.0">
+            <children>
+                <VBox prefHeight="300.0" prefWidth="501.0">
+                    <children>
+                        <LineChart>
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" />
+                            </yAxis>
+                        </LineChart>
+                        <LineChart>
+                            <xAxis>
+                                <CategoryAxis side="BOTTOM" />
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis side="LEFT" />
+                            </yAxis>
+                        </LineChart>
+                    </children>
+                </VBox>
+                <TextArea />
+            </children>
+        </HBox>
+
+        <HBox alignment="CENTER" spacing="10.0">
+            <Button text="Format" />
+            <Button text="Save Log As..." />
+            <Button text="Generate Output" />
+            <Button text="Save Output As..." />
+        </HBox>
+    </VBox>
+
+</AnchorPane>

@@ -6,7 +6,9 @@ import com.auggpt.backend.utils.IOUtils;
 import com.auggpt.backend.utils.MiscUtils;
 import com.auggpt.backend.utils.PromptUtils;
 import com.auggpt.backend.utils.TestClassFileBuilder;
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -22,17 +24,23 @@ import static com.auggpt.backend.utils.TestClassFileBuilder.splitCode;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
-@Slf4j
 public class MainController {
+    private final static Logger log = LogManager.getLogger("Log");
 
     private static ResourceBundle autogen;
     private static HashMap<String, String> systemProperties;
     private static EvaluationService evaluationService;
-    private final Scanner scanner = new Scanner(System.in);
+//    private final Scanner scanner = new Scanner(System.in);
     private final TestClassFileBuilder classFileBuilder = new TestClassFileBuilder();
     private TestClassFileBuilder tmpClassFileBuilder = new TestClassFileBuilder();
     private final String NAME = "Agent1";
+    public String api = null;
 
+    public MainController(){}
+
+    public void setApi(String api){
+        this.api = api;
+    }
 
     /**
      * Launch AugGPT
@@ -46,14 +54,14 @@ public class MainController {
         boolean err = false;
 
         log.info("Please enter your OpenAI API key:");
-        String api = scanner.next();
+//        String api = scanner.next();
 
         MultiAgentManager multiAgentManager = MultiAgentManager.getInstance();
 
         err = multiAgentManager.putAgent(NAME, AgentType.GPT_4o_MINI, api);
         CHECKERR(err);
 
-        log.info("CharGPT service initialize success!");
+        log.info("Agent service initialize success!");
         //1. read configuration
         systemProperties = new HashMap<>();
         autogen = ResourceBundle.getBundle("auggpt", Locale.getDefault());
@@ -343,8 +351,8 @@ public class MainController {
 
         boolean err = false;
 
-        log.info("Please enter your ChatGPT api key:");
-        String api = scanner.next();
+//        log.info("Please enter your ChatGPT api key:");
+//        String api = this.api;
 
         MultiAgentManager multiAgentManager = MultiAgentManager.getInstance();
 

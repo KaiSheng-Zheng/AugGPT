@@ -1,6 +1,8 @@
 package com.auggpt.backend.utils;
 
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,8 +12,8 @@ import java.util.regex.Pattern;
 
 import static com.auggpt.backend.utils.RandomUtils.generateRandomString;
 
-@Slf4j
 public class TestClassFileBuilder {
+    private final static Logger log = LogManager.getLogger("Log");
     private static final String IMPORT_PACKAGES = "import org.junit.jupiter.api.*;\n" +
             "import java.lang.reflect.*;\n" +
             "import java.util.*;\n" +

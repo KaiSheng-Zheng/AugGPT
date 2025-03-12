@@ -5,7 +5,9 @@ import com.auggpt.backend.model.AgentType;
 import com.auggpt.backend.model.ChatGPTAgent;
 import com.auggpt.backend.model.ChatGPTAgentRaw;
 import dev.langchain4j.data.message.ChatMessage;
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +16,8 @@ import java.util.Optional;
 /**
  * <p> This class provides a convenient container and some methods to initialize, close and chat with multiple agents.
  */
-@Slf4j
 public class MultiAgentManager {
+    private final static Logger log = LogManager.getLogger("Log");
     private final static MultiAgentManager MULTI_AGENT_SERVICE = new MultiAgentManager();
     private MultiAgentManager(){}
     public static MultiAgentManager getInstance(){

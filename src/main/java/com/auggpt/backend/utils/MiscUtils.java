@@ -1,6 +1,8 @@
 package com.auggpt.backend.utils;
 
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.sql.Date;
@@ -12,8 +14,8 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Slf4j
 public class MiscUtils {
+    private final static Logger log = LogManager.getLogger("Log");
     private MiscUtils(){}
 
     /**

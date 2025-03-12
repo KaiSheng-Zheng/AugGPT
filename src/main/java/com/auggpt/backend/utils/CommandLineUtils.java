@@ -2,12 +2,14 @@ package com.auggpt.backend.utils;
 
 import com.auggpt.backend.model.FileStreamClearThread;
 import com.auggpt.backend.model.StreamClearThread;
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 
-@Slf4j
 public class CommandLineUtils {
+    private final static Logger log = LogManager.getLogger("Log");
     public static void run_cmd_example(){
         String strcmd = "data\\core\\example.bat";
         run_cmd(strcmd);

@@ -3,7 +3,9 @@ package com.auggpt.backend.service;
 
 import com.auggpt.backend.model.CoverageMetrics;
 import com.auggpt.backend.utils.IOUtils;
-import lombok.extern.slf4j.Slf4j;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jacoco.core.analysis.*;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
@@ -28,8 +30,8 @@ import static com.auggpt.backend.utils.TestClassFileBuilder.methodPattern;
 
 
 
-@Slf4j
 public final class CoverageTester {
+    private final static Logger log = LogManager.getLogger("Log");
 
     private final PrintStream out;
     private final HashMap<String,Double> resultMap;
