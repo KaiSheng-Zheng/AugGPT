@@ -4,15 +4,13 @@ import com.auggpt.backend.controller.MainController;
 import com.auggpt.backend.utils.Log4j2CapturerUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
@@ -52,6 +50,8 @@ public class MainUIController {
     public ChoiceBox<String> apiChoiceBox;
     @FXML
     public TextField urlTextField;
+    @FXML
+    public Button abortBtn;
 
     private BlockingQueue<String> logEvents;
     private final static Logger log = LogManager.getLogger("Log");
@@ -65,7 +65,7 @@ public class MainUIController {
         docPathTextField.setEditable(false);
 
         apiChoiceBox.getItems().addAll(API_LIST);
-        apiChoiceBox.setValue(API_LIST[0]);
+        apiChoiceBox.setValue("");
 
         logTextArea.setEditable(false);
         logTextArea.textProperty().addListener(
@@ -79,7 +79,46 @@ public class MainUIController {
 
         controller = new MainController();
         startLogListener();
-        testChart();
+//        testChart();
+        Platform.runLater(() -> launchBtn.getScene()
+                .getWindow()
+                .setOnCloseRequest(windowEvent -> {
+                    logThread.interrupt();Platform.exit();
+                }));
+
+        apiChoiceBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                switch (newValue){
+                    case "ollama":{
+                        urlTextField.setText("127.0.0.1:11434");
+                        controller.setURL(urlTextField.getText());
+                        apiKeyTextField.setDisable(true);
+                        apiKeyTextField.setPromptText("Ignored");
+                        break;
+                    }
+                    default: case "openai":{
+                        urlTextField.setText("https://api.openai.com/v1/chat/completions");
+                        controller.setURL(urlTextField.getText());
+                        apiKeyTextField.setDisable(false);
+                        apiKeyTextField.setPromptText("sk-xxxxx");
+                        break;
+                    }
+                }
+            }
+        });
+        urlTextField.focusedProperty().addListener(((observableValue, oldVal, newVal) -> {
+            String url = urlTextField.getText();
+            if (!newVal && url != null){
+                controller.setURL(url);
+            }
+        }));
+        apiKeyTextField.focusedProperty().addListener(((observableValue, oldVal, newVal) -> {
+            String api = apiKeyTextField.getText();
+            if (!newVal && api != null){
+                controller.setAPI(api);
+            }
+        }));
+
         System.out.println("initialized");
     }
 
@@ -158,12 +197,26 @@ public class MainUIController {
         }
     }
 
+
+    private Thread controllerThread = null;
     @FXML
-    protected void launchController(){
-        try{
-            controller.launch();
-        } catch (Exception e){
-            log.error(e);
+    public void launchController(MouseEvent mouseEvent){
+        controllerThread = new Thread(() -> {
+            try {
+                controller.launch();
+            }catch (Exception e){
+                log.error(e);
+            }
+        });
+        controllerThread.start();
+    }
+
+    @FXML
+    public void abortController(MouseEvent mouseEvent) throws InterruptedException {
+        if (controllerThread != null && controllerThread.isAlive()){
+            controllerThread.interrupt();
+            controllerThread.join();
+            log.info("Process abort.");
         }
     }
 
@@ -171,28 +224,6 @@ public class MainUIController {
     public void confirmAPIKey(KeyEvent keyEvent) {
         if (keyEvent.getCode().equals(KeyCode.ENTER)){
             controller.setAPI(apiKeyTextField.getText());
-        }
-    }
-
-    @FXML
-    public void confirmProvider(InputMethodEvent inputMethodEvent) {
-        if (inputMethodEvent.getEventType().equals(InputMethodEvent.INPUT_METHOD_TEXT_CHANGED)){
-            switch (apiChoiceBox.getValue()){
-                case "ollama":{
-                    urlTextField.setText("127.0.0.1:11434");
-                    controller.setURL(urlTextField.getText());
-                    apiKeyTextField.setDisable(true);
-                    apiKeyTextField.setPromptText("Ignored");
-                    break;
-                }
-                default: case "openai":{
-                    urlTextField.setText("https://api.openai.com/v1/chat/completions");
-                    controller.setURL(urlTextField.getText());
-                    apiKeyTextField.setDisable(false);
-                    apiKeyTextField.setPromptText("sk-xxxxx");
-                    break;
-                }
-            }
         }
     }
 
@@ -212,4 +243,5 @@ public class MainUIController {
             }
         });
     }
+
 }
