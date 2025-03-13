@@ -6,6 +6,7 @@ import com.auggpt.backend.utils.IOUtils;
 import com.auggpt.backend.utils.MiscUtils;
 import com.auggpt.backend.utils.PromptUtils;
 import com.auggpt.backend.utils.TestClassFileBuilder;
+import com.auggpt.frontend.MainUIController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +32,7 @@ public class MainController {
     private final TestClassFileBuilder classFileBuilder = new TestClassFileBuilder();
     private TestClassFileBuilder tmpClassFileBuilder = new TestClassFileBuilder();
     private final String NAME = "Agent1";
+    public MainUIController uiController;
     public String api = null;
 
     public void setPDFPath(String path){
@@ -43,6 +45,20 @@ public class MainController {
         log.info("program root directory path changed to: {}",path);
     }
 
+    public void setURL(String url) {
+        systemProperties.put("url",url);
+        log.info("base url changed to: {}",url);
+    }
+
+    public void setAPI(String api) {
+        systemProperties.put("api",api);
+        log.info("api changed to: {}",api);
+    }
+
+    public MainController(MainUIController uiController){
+        this();
+        this.uiController = uiController;
+    }
     public MainController(){
         systemProperties = new HashMap<>();
         autogen = ResourceBundle.getBundle("auggpt", Locale.getDefault());
@@ -65,7 +81,9 @@ public class MainController {
 
         MultiAgentManager multiAgentManager = MultiAgentManager.getInstance();
 
-        err = multiAgentManager.putAgent(NAME, AgentType.GPT_4o_MINI, api);
+        err = multiAgentManager.putAgent(NAME, AgentType.GPT_4o_MINI,
+                systemProperties.get("api"),
+                systemProperties.get("url"));
         CHECKERR(err);
 
         log.info("Agent service initialize success!");
@@ -496,5 +514,6 @@ public class MainController {
             systemProperties.put(key,getPropertiesString(autogen,key));
         }
     }
+
 
 }

@@ -28,10 +28,12 @@
                 <HBox>
                     <children>
 
-                        <Label fx:id="apiKeyLabel" prefHeight="15.0" prefWidth="72.0" text="API Key:" />
-                        <TextField fx:id="apiKeyTextField" prefHeight="23.0" prefWidth="571.0" promptText="Enter API Key (Ubuntu format)" />
-                        <Button fx:id="launchBtn" onMouseClicked="#launchController" prefHeight="23.0" prefWidth="137.0" text="Launch" />
+                        <Label fx:id="apiKeyLabel" prefHeight="15.0" prefWidth="72.0" text="LLM Setup:" />
+                  <ChoiceBox fx:id="apiChoiceBox" onInputMethodTextChanged="#confirmProvider" prefHeight="23.0" prefWidth="88.0" />
+                        <TextField fx:id="apiKeyTextField" onKeyTyped="#confirmAPIKey" prefHeight="23.0" prefWidth="371.0" promptText="Enter API key here (e.g., sk-12345). Ignored if using Ollama" />
+                  <TextField fx:id="urlTextField" prefHeight="23.0" prefWidth="251.0" promptText="Enter URL here" />
                     </children></HBox>
+                  <Button fx:id="launchBtn" onMouseClicked="#launchController" prefHeight="23.0" prefWidth="791.0" text="Launch" />
             </children></VBox>
 
         <HBox spacing="10.0">

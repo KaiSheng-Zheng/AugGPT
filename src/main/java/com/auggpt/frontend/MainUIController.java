@@ -1,23 +1,25 @@
 package com.auggpt.frontend;
 
 import com.auggpt.backend.controller.MainController;
-import com.auggpt.backend.model.FancyOutput;
 import com.auggpt.backend.utils.Log4j2CapturerUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.*;
+import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 
 public class MainUIController {
@@ -45,21 +47,26 @@ public class MainUIController {
     @FXML
     public Label mainPanelLabel;
     @FXML
-    public LineChart<Number,Number> coverageChart;
-    @FXML
-    public LineChart<Number,Number> mutationChart;
-    @FXML
     public TextArea logTextArea;
+    @FXML
+    public ChoiceBox<String> apiChoiceBox;
+    @FXML
+    public TextField urlTextField;
 
     private BlockingQueue<String> logEvents;
     private final static Logger log = LogManager.getLogger("Log");
     private MainController controller;
     private Thread logThread;
+    private final static String[] API_LIST = {"openai","ollama"};
 
     @FXML
     private void initialize() {
         codePathTextField.setEditable(false);
         docPathTextField.setEditable(false);
+
+        apiChoiceBox.getItems().addAll(API_LIST);
+        apiChoiceBox.setValue(API_LIST[0]);
+
         logTextArea.setEditable(false);
         logTextArea.textProperty().addListener(
                 (ChangeListener<Object>) (observable, oldValue, newValue) -> {
@@ -67,8 +74,12 @@ public class MainUIController {
         });
         logTextArea.setWrapText(true);
 
+        coverageChart.getData().add(new XYChart.Series<>());
+        mutationChart.getData().add(new XYChart.Series<>());
+
         controller = new MainController();
         startLogListener();
+        testChart();
         System.out.println("initialized");
     }
 
@@ -97,6 +108,22 @@ public class MainUIController {
             }
         });
         logThread.start();
+    }
+
+    private void testChart(){
+        Thread tmp = new Thread(() -> {
+            Random rd = new Random();
+            for (int i = 0; i < 100; i++) {
+                updateChart(coverageChart.getData().get(0), String.valueOf(i),rd.nextDouble()*10);
+                updateChart(mutationChart.getData().get(0), String.valueOf(i),rd.nextDouble()*10);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        tmp.start();
     }
 
     @FXML
@@ -140,5 +167,49 @@ public class MainUIController {
         }
     }
 
+    @FXML
+    public void confirmAPIKey(KeyEvent keyEvent) {
+        if (keyEvent.getCode().equals(KeyCode.ENTER)){
+            controller.setAPI(apiKeyTextField.getText());
+        }
+    }
 
+    @FXML
+    public void confirmProvider(InputMethodEvent inputMethodEvent) {
+        if (inputMethodEvent.getEventType().equals(InputMethodEvent.INPUT_METHOD_TEXT_CHANGED)){
+            switch (apiChoiceBox.getValue()){
+                case "ollama":{
+                    urlTextField.setText("127.0.0.1:11434");
+                    controller.setURL(urlTextField.getText());
+                    apiKeyTextField.setDisable(true);
+                    apiKeyTextField.setPromptText("Ignored");
+                    break;
+                }
+                default: case "openai":{
+                    urlTextField.setText("https://api.openai.com/v1/chat/completions");
+                    controller.setURL(urlTextField.getText());
+                    apiKeyTextField.setDisable(false);
+                    apiKeyTextField.setPromptText("sk-xxxxx");
+                    break;
+                }
+            }
+        }
+    }
+
+    @FXML
+    public LineChart<String,Number> coverageChart;
+    @FXML
+    public LineChart<String,Number> mutationChart;
+    private final static int MAX_CHART_POINT = 10;
+    public void updateChart(XYChart.Series<String, Number> series, String testNumber, double coveragePercentage) {
+        // 创建一个新的数据点
+        XYChart.Data<String, Number> newData = new XYChart.Data<>(testNumber, coveragePercentage);
+        // 在JavaFX主线程中更新图表
+        Platform.runLater(() -> {
+            series.getData().add(newData);
+            if (series.getData().size() >= MAX_CHART_POINT){
+                series.getData().remove(0);
+            }
+        });
+    }
 }
