@@ -22,31 +22,26 @@ public class ChatGPTAgent extends BaseAgent {
     public ChatGPTAgent(String api){
         initializeChatService(api);
     }
-    public ChatGPTAgent(String api, String model){
-        initializeChatService(api, model);
+    public ChatGPTAgent(String api, String url){
+        initializeChatService(api, url);
     }
 
     @Override
     public void initializeChatService(String api){
-        chatModel = OpenAiChatModel.builder()
-                .apiKey(api)
-                .defaultRequestParameters(ChatRequestParameters.builder()
-                        .modelName(MODEL)
-                        .temperature(1.0)
-                        .topP(1.0)
-                        .build())
-                .baseUrl("https://api.chatanywhere.tech")
-                .build();
+        initializeChatService(api, "https://api.openai.com/v1/chat/completions", MODEL);
     }
-    public void initializeChatService(String api, String model){
+    public void initializeChatService(String api, String url){
+        initializeChatService(api, url,MODEL);
+    }
+    public void initializeChatService(String api,String url, String model){
         chatModel = OpenAiChatModel.builder()
                 .apiKey(api)
                 .defaultRequestParameters(ChatRequestParameters.builder()
-                        .modelName(MODEL)
+                        .modelName(model)
                         .temperature(1.0)
                         .topP(1.0)
                         .build())
-                .baseUrl("https://api.chatanywhere.tech")
+                .baseUrl(url)
                 .build();
     }
 

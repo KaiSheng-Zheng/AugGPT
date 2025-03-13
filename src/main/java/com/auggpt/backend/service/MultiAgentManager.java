@@ -31,18 +31,18 @@ public class MultiAgentManager {
      * @param agentType
      * @param api
      */
-    public boolean putAgent(String name, AgentType agentType, String api){
+    public boolean putAgent(String name, AgentType agentType, String api, String url){
         if (agentType==null){
             log.error("Trying to put a null agent!");
             return false;
         }
         if(1000<=agentType.getCode() && agentType.getCode()<1100){
-            Agent agent = new ChatGPTAgent(api);
+            Agent agent = new ChatGPTAgent(api,url);
             agents.put(name,agent);
             return true;
         }
         else if(2000<=agentType.getCode() && agentType.getCode()<2100){
-            Agent agent = new OllamaAgent(api);
+            Agent agent = new OllamaAgent(url);
             agents.put(name,agent);
             return true;
         }
