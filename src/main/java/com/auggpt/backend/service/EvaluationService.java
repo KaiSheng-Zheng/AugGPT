@@ -3,8 +3,8 @@ package com.auggpt.backend.service;
 import com.auggpt.backend.exception.MethodNotImplementException;
 import com.auggpt.backend.model.Code;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,44 +116,44 @@ public class EvaluationService {
         switch (type){
             case 100:
                 //coverage test baseline
-                log.info("Running coverage test on test files at {}, the target file are at {}",
-                        systemProperties.get("humanTestPath"),systemProperties.get("targetPath"));
+                log.info("Running coverage test on test files at %s, the target file are at %s".formatted(
+                        systemProperties.get("humanTestPath"),systemProperties.get("targetPath")));
                 log.info("The result will be cloned as baseline.");
 
                 coverageTester.execute(systemProperties, systemProperties.get("testPath"));
                 Map<String, Double> coverageThresholds = coverageTester.cloneResultMap();
 
-                log.info("The baseline is: {}", coverageThresholds);
+                log.info("The baseline is: %s".formatted(coverageThresholds));
                 break;
             case 101:
                 //coverage test evosuite
-                log.info("Running coverage test on test files at {}, the target file are at {}",
-                        systemProperties.get("testPath"),systemProperties.get("targetPath"));
+                log.info("Running coverage test on test files at %s, the target file are at %s".formatted(
+                        systemProperties.get("testPath"),systemProperties.get("targetPath")));
                 coverageTester.execute(systemProperties, systemProperties.get("testPath"));
-                log.info("The test result is: {}",coverageTester.getResultMap());
+                log.info("The test result is: %s".formatted(coverageTester.getResultMap()));
                 break;
             case 102:
                 //coverage test gpt
-                log.info("Running coverage test on test files at {}, the target file are at {}",
-                        systemProperties.get("GPTTestPath"),systemProperties.get("targetPath"));
+                log.info("Running coverage test on test files at %s, the target file are at %s".formatted(
+                        systemProperties.get("GPTTestPath"),systemProperties.get("targetPath")));
                 nonCoverageInfo = coverageTester.execute(systemProperties, systemProperties.get("testPath"));
-                log.info("The test result is: {}",coverageTester.getResultMap());
+                log.info("The test result is: %s".formatted(coverageTester.getResultMap()));
                 break;
             case 200:
                 //coverage test baseline
-                log.info("Running mutation test on test files at {}, the target file are at {}",
-                        systemProperties.get("humanTestPath"),systemProperties.get("targetPath"));
+                log.info("Running mutation test on test files at %s, the target file are at %s".formatted(
+                        systemProperties.get("humanTestPath"),systemProperties.get("targetPath")));
                 log.info("The result will be cloned as baseline.");
 
                 mutationTester.evaluateTestMutation(systemProperties, systemProperties.get("testPath"));
                 Map<String, Double> mutationThresholds = cloneHashMap(mutationTester.mutationResults);
 
-                log.info("The baseline is: {}", mutationThresholds);
+                log.info("The baseline is: %s".formatted(mutationThresholds));
                 break;
             case 202:
                 //coverage test gpt
-                log.info("Running mutation test on test files at {}, the target file are at {}",
-                        systemProperties.get("testPath"),systemProperties.get("targetPath"));
+                log.info("Running mutation test on test files at %s, the target file are at %s".formatted(
+                        systemProperties.get("testPath"),systemProperties.get("targetPath")));
                 mutationTester.evaluateTestMutation(systemProperties, systemProperties.get("testPath"));
                 break;
             default:

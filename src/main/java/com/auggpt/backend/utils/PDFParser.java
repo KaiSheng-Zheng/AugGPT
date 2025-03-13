@@ -1,8 +1,8 @@
 package com.auggpt.backend.utils;
 
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.pdfbox.io.RandomAccessBufferedFileInputStream;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;

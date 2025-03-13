@@ -13,8 +13,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.Random;

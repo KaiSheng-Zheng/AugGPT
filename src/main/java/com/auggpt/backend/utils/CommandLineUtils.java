@@ -3,8 +3,8 @@ package com.auggpt.backend.utils;
 import com.auggpt.backend.model.FileStreamClearThread;
 import com.auggpt.backend.model.StreamClearThread;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 

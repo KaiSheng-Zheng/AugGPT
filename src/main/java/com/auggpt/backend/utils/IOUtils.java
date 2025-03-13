@@ -4,8 +4,8 @@ import com.auggpt.backend.service.CompileService;
 import com.auggpt.backend.model.Code;
 import com.auggpt.backend.model.Ignore;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -83,7 +83,7 @@ public class IOUtils {
             osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
             osw.write(content);
             osw.flush();
-            if(logging) log.info("Test file written to {}", javaFile.getAbsolutePath());
+            if(logging) log.info("Test file written to %s".formatted(javaFile.getAbsolutePath()));
             osw.close();
             return javaFile;
         } catch (IOException e) {
@@ -320,7 +320,7 @@ public class IOUtils {
      *      If false, only the files under the directory will be deleted.
      */
     public static void cleanUp(String path,boolean all) {
-        if (logging) log.info("Delete files under {}",path);
+        if (logging) log.info("Delete files under %s".formatted(path));
         File file = new File(path);
         if(file.isFile()){
             file.delete();

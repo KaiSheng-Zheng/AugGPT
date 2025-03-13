@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+    <appender class="com.auggpt.backend.utils.ListAppender" name="Log">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level - %msg%n"/>
+        </layout>
+    </appender>
+    <logger name="Log">
+        <appender-ref ref="Log"/>
+    </logger>
+</log4j:configuration>

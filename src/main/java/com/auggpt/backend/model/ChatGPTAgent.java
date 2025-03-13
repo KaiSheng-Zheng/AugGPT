@@ -8,8 +8,8 @@ import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

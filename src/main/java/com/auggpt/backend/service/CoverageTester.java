@@ -4,8 +4,8 @@ package com.auggpt.backend.service;
 import com.auggpt.backend.model.CoverageMetrics;
 import com.auggpt.backend.utils.IOUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.jacoco.core.analysis.*;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;

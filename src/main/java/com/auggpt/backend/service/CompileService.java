@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.auggpt.backend.utils.IOUtils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import javax.tools.*;
 import java.io.File;
@@ -94,7 +94,7 @@ public class CompileService {
 
     private static boolean compile(String rootPath, String jarPath, String dest, String filePath, Integer retry){
 
-        if (logging) log.info("Compiling {}...", filePath);
+        if (logging) log.info("Compiling %s...".formatted(filePath));
 
         Iterable<? extends JavaFileObject> files;
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
@@ -112,7 +112,7 @@ public class CompileService {
                 compiler.getStandardFileManager(null, null, null);
 
         if (jarPath!=null){
-            if (logging) log.info("Adding third-party jar dependencies' in directory: {}", jarPath);
+            if (logging) log.info("Adding third-party jar dependencies' in directory: %s".formatted(jarPath));
             jars = classPathConfig(new ArrayList<>(Collections.singletonList(rootPath)),jarPath);
             options.addAll(jars);
         }
@@ -129,7 +129,7 @@ public class CompileService {
         Boolean result = task.call();
 
         if (result) {
-            if (logging) log.info("Compile {} successfully", filePath);
+            if (logging) log.info("Compile %s successfully".formatted(filePath));
         } else if (retry<6) {
             Map<Path, List<String>> sourceLinesMap = new HashMap<>();
 

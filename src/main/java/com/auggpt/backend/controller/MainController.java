@@ -7,8 +7,8 @@ import com.auggpt.backend.utils.MiscUtils;
 import com.auggpt.backend.utils.PromptUtils;
 import com.auggpt.backend.utils.TestClassFileBuilder;
 import com.auggpt.frontend.MainUIController;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -37,22 +37,22 @@ public class MainController {
 
     public void setPDFPath(String path){
         systemProperties.put("pdfInputPath",path);
-        log.info("document input path changed to: {}",path);
+        log.info("document input path changed to: %s".formatted(path));
     }
 
     public void setProgramRootPath(String path){
         systemProperties.put("programRootPath",path);
-        log.info("program root directory path changed to: {}",path);
+        log.info("program root directory path changed to: %s".formatted(path));
     }
 
     public void setURL(String url) {
         systemProperties.put("url",url);
-        log.info("base url changed to: {}",url);
+        log.info("base url changed to: %s".formatted(url));
     }
 
     public void setAPI(String api) {
         systemProperties.put("api",api);
-        log.info("api changed to: {}",api);
+        log.info("api changed to: %s".formatted(api));
     }
 
     public MainController(MainUIController uiController){
@@ -149,20 +149,20 @@ public class MainController {
 //            }
 
             log.info("refining...");
-            log.info("total length: {}",tot);
+            log.info("total length: %s".formatted(tot));
 
             int max = (int) Math.ceil(tot/(double)sep);
 
             ArrayList<String> strs = new ArrayList<>();
             for (int i = 0; i < max; i++) {
 
-                log.info("iter: {}/{}",i,max);
+                log.info("iter: %.2d/%.2d".formatted(i,max));
                 int sepMin = Math.min(tot, (i + 1) * sep);
                 String subNCInfo = nonCoveredInfo.substring(i * sep, sepMin);
                 String mutInfoStr = mutInfoFilter(nonCoveredInfo, mutInfo);
 
-                log.info("mutant info length: {}",mutInfoStr.length());
-                log.info("compile info length: {}",compileInfo.length());
+                log.info("mutant info length: %d".formatted(mutInfoStr.length()));
+                log.info("compile info length: %d".formatted(compileInfo.length()));
 
                 msg = PromptUtils.prompting(List.of(
                         subNCInfo,
@@ -191,7 +191,7 @@ public class MainController {
             double thisKill = EvaluationService.getMutationResults().get(MutationTester.MU_KILL_RATE);
             int maxTolCnt = Integer.parseInt(systemProperties.get("maxRejectTolerance"));
             if ((thisEval - lastEval <= 0.001 && thisKill - lastMuKill <= 0.001) && cnt<maxTolCnt) {
-                log.info("No improve, try again. {}/{}",cnt,maxTolCnt);
+                log.info("No improve, try again. %.2d/%.2d".formatted(cnt,maxTolCnt));
                 cnt++;
             } else {
                 log.info("accepted");
@@ -211,7 +211,7 @@ public class MainController {
 
         //5. output and cleanup
         multiAgentManager.closeAll();
-        log.info("Finish generation. Please check the test files at {}\n",systemProperties.get("testPath"));
+        log.info("Finish generation. Please check the test files at %s\n".formatted(systemProperties.get("testPath")));
         log.info("-----------------------------------------------");
 //        System.exit(0);
 
@@ -242,7 +242,7 @@ public class MainController {
     }
 
     private void initialize() {
-        log.info("The system is launched at {}",systemProperties.get("repoPath"));
+        log.info("The system is launched at %s".formatted(systemProperties.get("repoPath")));
 
         File dir = new File(systemProperties.get("rootPath"));
         if (!dir.exists()){
@@ -334,7 +334,7 @@ public class MainController {
         if (reachIterLimit) return true;
 
         int testNum = countTests(classFileBuilder.getResult());
-        log.info("Current test number: {}",testNum);
+        log.info("Current test number: %d".formatted(testNum));
         boolean reachTestNumLimit = testNumberThreshold > 0 && testNum >= testNumberThreshold;
         if (reachTestNumLimit) return true;
 

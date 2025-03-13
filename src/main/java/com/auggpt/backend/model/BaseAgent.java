@@ -6,8 +6,8 @@ import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -69,14 +69,9 @@ public abstract class BaseAgent implements Agent{
         return history;
     }
 
-    private ArrayList<String> chat(String msg){
+    private ArrayList<String> chat(String msg) {
         if(chatModel == null){
-            try {
-                throw new RuntimeException("Please initialize the OpenAI client service");
-            }catch (RuntimeException e){
-                log.error(e.getMessage(),e);
-                return null;
-            }
+            throw new RuntimeException("Please initialize the OpenAI client service");
         }
 
         LocalDate currentDate = LocalDate.now();
@@ -112,7 +107,7 @@ public abstract class BaseAgent implements Agent{
                     log.error("Stop retrying, please check your network and configuration.");
                     throw e;
                 }
-                log.info("Retry...{}",cnt);
+                log.info("Retry...%d".formatted(cnt));
             }
         }
 

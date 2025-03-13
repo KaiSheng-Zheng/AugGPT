@@ -6,3 +6,4 @@ data/temp
 data/targets
 data/tests
 *.iml
+data/core/PIT_script.bat

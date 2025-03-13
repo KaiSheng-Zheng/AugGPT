@@ -6,8 +6,8 @@ import com.auggpt.backend.model.ChatGPTAgent;
 import com.auggpt.backend.model.OllamaAgent;
 import dev.langchain4j.data.message.ChatMessage;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +54,7 @@ public class MultiAgentManager {
 //        }
         else {
             log.error("Exception happened when trying to put an agent. " +
-                    "The params are: \n name:{}\nagentType:{}\napi:{}",name,agentType,api);
+                    "The params are: \n name:%s\nagentType:%s\napi:%s".formatted(name,agentType,api));
             return false;
         }
     }

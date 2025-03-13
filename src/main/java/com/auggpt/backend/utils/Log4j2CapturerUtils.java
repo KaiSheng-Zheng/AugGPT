@@ -1,7 +1,9 @@
 package com.auggpt.backend.utils;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,17 +24,18 @@ public class Log4j2CapturerUtils {
      */
     public static void captureLogs(String name) {
         // 1. 获取 Logger
-        Logger logger = (Logger) LogManager.getLogger(name);
+        Logger logger = LogManager.getLogger(name);
 
         // 2. 创建 ListAppender 并设置布局
-        listAppender = ListAppender.createAppender("ListAppender", null);
-        listAppender.start();
-
+        listAppender = new ListAppender();
+        listAppender.setLayout(
+                new PatternLayout("%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p - %m%n"));
+//"%d{yyyy-MM-dd}-%t-%x-%-5p-%-10c:%m%n"
         // 3. 清空之前的日志
         listAppender.clear();
 
         // 4. 设置 Logger 的附加属性为 false，避免日志重复输出
-        logger.setAdditive(false);
+        logger.setAdditivity(false);
 
         // 5. 将 MemoryAppender 添加到 Logger
         logger.addAppender(listAppender);
@@ -44,13 +47,13 @@ public class Log4j2CapturerUtils {
     public static void stopCapture() {
         if (listAppender != null) {
             // 1. 获取 Logger
-            Logger logger = (Logger) LogManager.getContext(false).getLogger(Log4j2CapturerUtils.class.getName());
+            Logger logger = LogManager.getLogger(Log4j2CapturerUtils.class.getName());
 
             // 2. 移除 MemoryAppender
             logger.removeAppender(listAppender);
 
             // 3. 停止 MemoryAppender
-            listAppender.stop();
+            listAppender.close();
             listAppender = null;
         }
     }

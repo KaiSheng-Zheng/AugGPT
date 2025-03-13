@@ -1,7 +1,7 @@
 package com.auggpt.backend.service;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -73,7 +73,7 @@ public class MutationTester {
         File pitReport = new File(systemProperties.get("PITReportPath")+"/"+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("uuuu-MM-dd-HH-mm-ss")));
         if (!pitReport.exists()) {
             boolean mkdir = pitReport.mkdirs();
-            if(mkdir) log.info("Create PITest report directory at {} successfully.",pitReport.getAbsolutePath());
+            if(mkdir) log.info("Create PITest report directory at %s successfully.".formatted(pitReport.getAbsolutePath()));
         }
         cmdOrigin = cmdOrigin.replace("REPORT_DIR", pitReport.getAbsolutePath());//-target TARGET_PATH -base_dir BASE_DIR_PATH
 
