@@ -5,11 +5,11 @@ import dev.langchain4j.model.ollama.OllamaChatModel;
 public class OllamaAgent extends BaseAgent {
     private static final String MODEL = AgentType.OLLAMA_MODEL.getName(); // Default
     private OllamaAgent(){initializeChatService(null);}
-    public OllamaAgent(String url){
-        initializeChatService(url);
+    public OllamaAgent(String url, String model){
+        initializeChatService(url, model);
     }
 
-    public void initializeChatService(String model, String url){
+    public void initializeChatService(String url,String model){
         if (url == null || url.isEmpty()) url = "127.0.0.1:11434";
         chatModel = OllamaChatModel.builder()
                 .modelName(model)
@@ -20,7 +20,7 @@ public class OllamaAgent extends BaseAgent {
     }
     @Override
     public void initializeChatService(String url){
-        initializeChatService(MODEL,url);
+        initializeChatService(url,MODEL);
     }
 
 }

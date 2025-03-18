@@ -1,49 +1,38 @@
 package com.auggpt.backend.model;
 
-import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
-import dev.langchain4j.data.message.SystemMessage;
-import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
-import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.anthropic.AnthropicChatModel;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class ChatGPTAgent extends BaseAgent {
+public class AnthropicAgent extends BaseAgent {
     private ArrayList<ChatMessage> history = new ArrayList<>();
     private static final String MODEL = AgentType.GPT_4o_MINI.getName(); // Default
-    private ChatGPTAgent(){}
-    public ChatGPTAgent(String api){
+    private AnthropicAgent(){}
+    public AnthropicAgent(String api){
         initializeChatService(api);
     }
-    public ChatGPTAgent(String api, String url){
+    public AnthropicAgent(String api, String url){
         initializeChatService(api, url);
     }
-    public ChatGPTAgent(String api, String url, String model){
-        initializeChatService(api, url,model);
+    public AnthropicAgent(String api, String url, String model){
+        initializeChatService(api, url, model);
     }
 
     @Override
     public void initializeChatService(String api){
-        initializeChatService(api, "https://api.openai.com/v1/chat/completions", MODEL);
+        initializeChatService(api, "https://api.anthropic.com/v1", MODEL);
     }
     public void initializeChatService(String api, String url){
         initializeChatService(api, url,MODEL);
     }
     public void initializeChatService(String api,String url, String model){
-        chatModel = OpenAiChatModel.builder()
+        chatModel = AnthropicChatModel.builder()
                 .apiKey(api)
-                .defaultRequestParameters(ChatRequestParameters.builder()
-                        .modelName(model)
-                        .temperature(1.0)
-                        .topP(1.0)
-                        .build())
+                .modelName(model)
+                .temperature(1.0)
+                .topP(1.0)
                 .baseUrl(url)
                 .build();
     }

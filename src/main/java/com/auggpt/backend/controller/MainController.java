@@ -34,6 +34,7 @@ public class MainController {
     private final String NAME = "Agent1";
     public MainUIController uiController;
     public String api = null;
+    public AgentType agentType;
 
     public void setPDFPath(String path){
         systemProperties.put("pdfInputPath",path);
@@ -64,6 +65,13 @@ public class MainController {
         autogen = ResourceBundle.getBundle("auggpt", Locale.getDefault());
         loadSystemProperties();
     }
+    public void setAgentType(AgentType agentType){
+        this.agentType = agentType;
+    }
+    public void setModelName(String modelName){
+        systemProperties.put("model",modelName);
+        log.info("model changed to: %s".formatted(modelName));
+    }
 
     /**
      * Launch AugGPT
@@ -81,9 +89,10 @@ public class MainController {
 
         MultiAgentManager multiAgentManager = MultiAgentManager.getInstance();
 
-        err = multiAgentManager.putAgent(NAME, AgentType.GPT_4o_MINI,
+        err = multiAgentManager.putAgent(NAME, agentType,
                 systemProperties.get("api"),
-                systemProperties.get("url"));
+                systemProperties.get("url"),
+                systemProperties.get("model"));
         CHECKERR(err);
 
         log.info("Agent service initialize success!");
@@ -110,6 +119,7 @@ public class MainController {
 
         msg = PromptUtils.prompting(List.of(PDFContent), PromptType.RAW_PDF_SUBMIT);
         String resp1 = multiAgentManager.chat(NAME, msg, responses, respPointer);
+        multiAgentManager.chat(NAME, msg, responses, respPointer);
 
         //3.2 prepare for refine loop
         boolean interrupt = false;
@@ -329,6 +339,8 @@ public class MainController {
         Map<String, Double> resultMap = evaluationService.getCoverageResults();
         double result = resultMap.get(CoverageMetrics.INSTRUCTION.name());
         runCnt++;
+
+        if(uiController != null) uiController.updateCovChart(String.valueOf(runCnt),result);
 
         boolean reachIterLimit = iterationThreshold > 0 && runCnt >= iterationThreshold;
         if (reachIterLimit) return true;

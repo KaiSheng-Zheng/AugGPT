@@ -1,9 +1,6 @@
 package com.auggpt.backend.service;
 
-import com.auggpt.backend.model.Agent;
-import com.auggpt.backend.model.AgentType;
-import com.auggpt.backend.model.ChatGPTAgent;
-import com.auggpt.backend.model.OllamaAgent;
+import com.auggpt.backend.model.*;
 import dev.langchain4j.data.message.ChatMessage;
 
 import org.apache.log4j.LogManager;
@@ -31,18 +28,34 @@ public class MultiAgentManager {
      * @param agentType
      * @param api
      */
-    public boolean putAgent(String name, AgentType agentType, String api, String url){
+    public boolean putAgent(String name, AgentType agentType, String api, String url, String model){
         if (agentType==null){
             log.error("Trying to put a null agent!");
             return false;
         }
-        if(1000<=agentType.getCode() && agentType.getCode()<1100){
-            Agent agent = new ChatGPTAgent(api,url);
+//        String model = model;
+        if(1000<=agentType.getCode() && agentType.getCode()<1010){
+            Agent agent = new ChatGPTAgent(api,url,model);
             agents.put(name,agent);
             return true;
         }
-        else if(2000<=agentType.getCode() && agentType.getCode()<2100){
-            Agent agent = new OllamaAgent(url);
+        else if(1010<=agentType.getCode() && agentType.getCode()<1020){
+            Agent agent = new AnthropicAgent(api, url, model);
+            agents.put(name,agent);
+            return true;
+        }
+        else if(1020<=agentType.getCode() && agentType.getCode()<1030){
+            Agent agent = new ChatGPTAgent(api, url, model);
+            agents.put(name,agent);
+            return true;
+        }
+        else if(1030<=agentType.getCode() && agentType.getCode()<1040){
+            Agent agent = new ChatGPTAgent(api, url, model);
+            agents.put(name,agent);
+            return true;
+        }
+        else if(2000<=agentType.getCode() && agentType.getCode()<3000){
+            Agent agent = new OllamaAgent(url, model);
             agents.put(name,agent);
             return true;
         }
