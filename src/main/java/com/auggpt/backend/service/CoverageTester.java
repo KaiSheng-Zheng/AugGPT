@@ -1,9 +1,11 @@
 
 package com.auggpt.backend.service;
 
+import cn.hutool.core.lang.hash.Hash;
 import com.auggpt.backend.model.CoverageMetrics;
 import com.auggpt.backend.utils.IOUtils;
 
+import com.auggpt.backend.utils.MethodParser;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.jacoco.core.analysis.*;
@@ -37,6 +39,7 @@ public final class CoverageTester {
     private final HashMap<String,Double> resultMap;
     private String nonCoverageInfo;
     private boolean logging = true;
+    public HashMap<String,Double> methodCovMap;
 
     /**
      * Creates a new example instance printing to the given stream.
@@ -48,6 +51,7 @@ public final class CoverageTester {
     public CoverageTester(final PrintStream out) {
         this.out = out;
         this.resultMap = new HashMap<>();
+        this.methodCovMap = new HashMap<>();
     }
     public CoverageTester(final PrintStream out, boolean logging) {
         this(out);
@@ -176,6 +180,7 @@ public final class CoverageTester {
         int missedBranches = 0;
         int totalBranches = 0;
 
+
         for (final IClassCoverage cc : coverageBuilder.getClasses()) {
             List<String> fileLines = Files.readAllLines(Path.of(systemProperties.get("programRootPath") + "\\\\" + cc.getSourceFileName()));
 
@@ -188,6 +193,7 @@ public final class CoverageTester {
             boolean allGreen = true;
             HashMap<IMethodCoverage, Boolean> redMethods = new HashMap<>();
             for (IMethodCoverage method : cc.getMethods()) {
+
                 boolean isRed = false;
                 for (int i = method.getFirstLine(); i <= method.getLastLine(); i++){
                     if (method.getLine(i).getStatus() == ICounter.NOT_COVERED || method.getLine(i).getStatus() == ICounter.PARTLY_COVERED){
@@ -249,6 +255,22 @@ public final class CoverageTester {
                 sb.append(line).append("\n");
             }
 
+        }
+
+
+        methodCovMap.clear();
+        for (final IClassCoverage cc : coverageBuilder.getClasses()) {
+            for (IMethodCoverage method : cc.getMethods()) {
+                int localCovLines = 0;
+                for (int i = method.getFirstLine(); i <= method.getLastLine(); i++){
+                    if (method.getLine(i).getStatus() == ICounter.FULLY_COVERED){
+                        localCovLines += 1;
+                    }
+                }
+                int localTotLines = method.getLastLine()-method.getFirstLine()+1;
+                String methodName = cc.getSourceFileName().replace(".java","") + ": " + MethodParser.parseMethod(method);
+                methodCovMap.put(methodName, ((double)localCovLines/localTotLines));
+            }
         }
 
         if(logging){

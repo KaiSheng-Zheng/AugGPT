@@ -1,0 +1,58 @@
+/* styles.css */
+.root {
+    -fx-background-color: white; /* 设置背景为白色 */
+}
+
+/* 去除按钮的默认阴影 */
+.button {
+    -fx-effect: none; /* 去除阴影效果 */
+    -fx-background-color: #20a6ff; /* 按钮正常状态的颜色 */
+    -fx-text-fill: white; /* 文本颜色 */
+    -fx-font-size: 14px; /* 字号 */
+    -fx-font-weight: bold; /* 字体加粗 */
+}
+
+/* 按钮鼠标悬停时的样式 */
+.button:hover {
+    -fx-background-color: #42b7ff; /* 悬停时的背景颜色 */
+}
+
+/* 按钮按下时的样式 */
+.button:pressed {
+    -fx-background-color: #008bff; /* 按下时的背景颜色 */
+}
+
+.launch {
+    -fx-background-color: linear-gradient(to bottom right, #5d0eff, #1a96ff);
+}
+.launch:hover {
+    -fx-background-color: linear-gradient(to bottom right, #6c29ff, #33aeff);
+}
+.launch:pressed {
+    -fx-background-color: linear-gradient(to bottom right, #4f00f6, #006efc);
+}
+
+.choice-box {
+    -fx-effect: none;
+    -fx-background-color: white;
+    -fx-text-fill: #2b87ff;
+}
+
+.choice-box .list-cell:hover {
+    -fx-background-color: #008bff; /* 悬停时的背景色 */
+    -fx-text-fill: white; /* 悬停时的文字颜色 */
+    -fx-border-color: grey;
+}
+
+.text-field {
+    -fx-effect: none;
+}
+
+.header {
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.line-chart {
+    -fx-font-size: 14px;
+}

@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ChatGPTAgent extends BaseAgent {
-    private ArrayList<ChatMessage> history = new ArrayList<>();
+//    private ArrayList<ChatMessage> history = new ArrayList<>();
     private static final String MODEL = AgentType.GPT_4o_MINI.getName(); // Default
     private ChatGPTAgent(){}
     public ChatGPTAgent(String api){

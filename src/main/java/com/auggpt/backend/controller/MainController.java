@@ -166,7 +166,7 @@ public class MainController {
             ArrayList<String> strs = new ArrayList<>();
             for (int i = 0; i < max; i++) {
 
-                log.info("iter: %.2d/%.2d".formatted(i,max));
+                log.info("iter: %d/%d".formatted(i,max));
                 int sepMin = Math.min(tot, (i + 1) * sep);
                 String subNCInfo = nonCoveredInfo.substring(i * sep, sepMin);
                 String mutInfoStr = mutInfoFilter(nonCoveredInfo, mutInfo);
@@ -201,7 +201,7 @@ public class MainController {
             double thisKill = EvaluationService.getMutationResults().get(MutationTester.MU_KILL_RATE);
             int maxTolCnt = Integer.parseInt(systemProperties.get("maxRejectTolerance"));
             if ((thisEval - lastEval <= 0.001 && thisKill - lastMuKill <= 0.001) && cnt<maxTolCnt) {
-                log.info("No improve, try again. %.2d/%.2d".formatted(cnt,maxTolCnt));
+                log.info("No improve, try again. %d/%d".formatted(cnt,maxTolCnt));
                 cnt++;
             } else {
                 log.info("accepted");
@@ -209,6 +209,10 @@ public class MainController {
                     classFileBuilder.appendClass(content);
                 lastEval = thisEval;
                 lastMuKill = thisKill;
+                Map<String,Double> methodCovMap = evaluationService.getMethodsCovResults();
+                for (String method : methodCovMap.keySet()){
+                    uiController.addOrUpdateMethodMetric(method,methodCovMap.get(method));
+                }
                 interrupt = isInterrupt();
                 cnt = 0;
             }
@@ -340,7 +344,7 @@ public class MainController {
         double result = resultMap.get(CoverageMetrics.INSTRUCTION.name());
         runCnt++;
 
-        if(uiController != null) uiController.updateCovChart(String.valueOf(runCnt),result);
+//        if(uiController != null) uiController.updateCovChart(String.valueOf(runCnt),result);
 
         boolean reachIterLimit = iterationThreshold > 0 && runCnt >= iterationThreshold;
         if (reachIterLimit) return true;
@@ -366,7 +370,6 @@ public class MainController {
 
         return failToImprove;
     }
-
 //    /**
 //     * Plain approach
 //     */

@@ -26,10 +26,6 @@ public class EvaluationService {
 
     // indicate whether the mutation test has been launched
 
-
-
-
-
     private EvaluationService(){
     }
 
@@ -83,7 +79,6 @@ public class EvaluationService {
     public synchronized String getNonCoveredInfo() {
         try {
             evaluateTest(102);
-
             return covInfoFilter(nonCoverageInfo);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -96,6 +91,10 @@ public class EvaluationService {
             return null;
         }
         return coverageTester.getResultMap();
+    }
+
+    public HashMap<String, Double> getMethodsCovResults(){
+        return coverageTester.methodCovMap;
     }
 
     private final CoverageTester coverageTester = new CoverageTester(System.out);

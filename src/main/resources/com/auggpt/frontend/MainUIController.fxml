@@ -1,72 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.*?>
+<?import com.auggpt.frontend.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auggpt.frontend.MainUIController">
+<AnchorPane prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.auggpt.frontend.MainUIController">
+    <stylesheets>
+        <URL value="@MainUIContoller.css" />
+    </stylesheets>
     <VBox spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
         <HBox spacing="10.0">
-            <Label fx:id="inputLabel" text="Input Settings" />
+            <Label fx:id="inputLabel" prefHeight="33.0" prefWidth="132.0" styleClass="header" text="Input Settings" />
         </HBox>
         <VBox spacing="10.0">
             <children>
-                <HBox>
+                <HBox spacing="10.0">
                     <children>
-                        <Label fx:id="docPathLabel" prefHeight="15.0" prefWidth="79.0" text="Doc Path:" />
-                        <TextField fx:id="docPathTextField" prefHeight="23.0" prefWidth="577.0" />
+                        <Label fx:id="docPathLabel" prefHeight="15.0" prefWidth="80.0" text="Doc Path:" />
+                        <TextField fx:id="docPathTextField" prefHeight="23.0" prefWidth="945.0" />
                         <Button fx:id="docPathBtn" onMouseClicked="#selectDocPath" prefHeight="23.0" prefWidth="145.0" text="Select Doc Path..." />
                     </children>
                 </HBox>
-                <HBox>
+                <HBox spacing="10.0">
+                    <children>
+                        <Label fx:id="codePathLabel" prefHeight="15.0" prefWidth="80.0" text="Code Path:" />
+                        <TextField fx:id="codePathTextField" prefHeight="23.0" prefWidth="945.0" />
+                        <Button fx:id="codePathBtn" onMouseClicked="#selectCodeDirPath" prefHeight="23.0" prefWidth="145.0" text="Select Code Path..." />
+                    </children></HBox>
+                <HBox spacing="10.0">
                     <children>
 
-                        <Label fx:id="codePathLabel" prefHeight="15.0" prefWidth="72.0" text="Code Path:" />
-                        <TextField fx:id="codePathTextField" prefHeight="23.0" prefWidth="571.0" />
-                        <Button fx:id="codePathBtn" onMouseClicked="#selectCodeDirPath" prefHeight="23.0" prefWidth="140.0" text="Select Code Path..." />
+                        <Label fx:id="apiKeyLabel" prefHeight="15.0" prefWidth="80.0" text="LLM Setup:" />
+                  <ChoiceBox fx:id="apiChoiceBox" prefHeight="23.0" prefWidth="86.0" />
+                  <TextField fx:id="modelNameTextField" prefHeight="23.0" prefWidth="106.0" />
+                        <TextField fx:id="apiKeyTextField" onKeyTyped="#confirmAPIKey" prefHeight="23.0" prefWidth="498.0" promptText="Enter API key here (e.g., sk-12345). Ignored if using Ollama" />
+                  <TextField fx:id="urlTextField" prefHeight="23.0" prefWidth="370.0" promptText="Enter URL here" />
                     </children></HBox>
-                <HBox>
-                    <children>
-
-                        <Label fx:id="apiKeyLabel" prefHeight="15.0" prefWidth="72.0" text="LLM Setup:" />
-                  <ChoiceBox fx:id="apiChoiceBox" onInputMethodTextChanged="#confirmProvider" prefHeight="23.0" prefWidth="88.0" />
-                        <TextField fx:id="apiKeyTextField" onKeyTyped="#confirmAPIKey" prefHeight="23.0" prefWidth="371.0" promptText="Enter API key here (e.g., sk-12345). Ignored if using Ollama" />
-                  <TextField fx:id="urlTextField" prefHeight="23.0" prefWidth="251.0" promptText="Enter URL here" />
-                    </children></HBox>
-                  <Button fx:id="launchBtn" onMouseClicked="#launchController" prefHeight="23.0" prefWidth="791.0" text="Launch" />
             </children></VBox>
+      <HBox prefHeight="30.0" prefWidth="780.0" spacing="60.0">
+         <children>
+                  <Button fx:id="launchBtn" onMouseClicked="#launchController" prefHeight="23.0" prefWidth="600.0" styleClass="button, launch" text="Launch">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin></Button>
+            <Button fx:id="abortBtn" mnemonicParsing="false" onMouseClicked="#abortController" prefHeight="23.0" prefWidth="600.0" text="Abort" />
+         </children>
+         <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+         </VBox.margin>
+      </HBox>
 
         <HBox spacing="10.0">
-            <Label fx:id="mainPanelLabel" text="Main Panel" />
+            <Label fx:id="mainPanelLabel" prefHeight="23.0" prefWidth="1179.0" styleClass="header" text="Generated tests panel and user guidance inputs                           Coverage information                 Running log" />
         </HBox>
-        <HBox prefHeight="385.0" prefWidth="780.0">
+        <HBox prefHeight="617.0" prefWidth="1180.0" spacing="15.0">
             <children>
-                <VBox prefHeight="300.0" prefWidth="501.0">
-                    <children>
-                        <LineChart fx:id="coverageChart" title="Couverage Test Result">
-                            <xAxis>
-                                <CategoryAxis side="BOTTOM" />
-                            </xAxis>
-                            <yAxis>
-                                <NumberAxis side="LEFT" />
-                            </yAxis>
-                        </LineChart>
-                        <LineChart fx:id="mutationChart" title="Mutation Test Result">
-                            <xAxis>
-                                <CategoryAxis side="BOTTOM" />
-                            </xAxis>
-                            <yAxis>
-                                <NumberAxis side="LEFT" />
-                            </yAxis>
-                        </LineChart>
-                    </children>
+                <VBox prefHeight="300.0" prefWidth="501.0" spacing="10.0">
+               <children>
+                  <TextArea fx:id="generatedMethodTextArea" prefHeight="583.0" prefWidth="501.0" />
+                  <HBox prefHeight="47.0" prefWidth="501.0" spacing="10.0">
+                     <children>
+                        <TextField fx:id="userPromptTextField" prefHeight="40.0" prefWidth="429.0" promptText="Enter your guidance here." />
+                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="74.0" text="Enter" />
+                     </children>
+                  </HBox>
+               </children>
                 </VBox>
-                <TextArea fx:id="logTextArea" />
+            <MethodCoveragePane fx:id="metricsVBox" prefHeight="615.0" prefWidth="250.0" />
+                <TextArea fx:id="logTextArea" prefHeight="617.0" prefWidth="410.0" />
             </children>
         </HBox>
 
-        <HBox alignment="CENTER" spacing="10.0">
-            <Button text="Format" />
+        <HBox alignment="CENTER" spacing="20.0">
             <Button text="Save Log As..." />
             <Button text="Generate Output" />
             <Button text="Save Output As..." />

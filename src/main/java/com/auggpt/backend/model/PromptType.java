@@ -77,8 +77,7 @@ public enum PromptType {
             "8. Use detailed comments to derive the test logic step by step and write down the process before the corresponding instruction. The assertion result should be derived from the document.\n" +
             "9. You MUST put all tests in a single class, with @Test public void.\n" +
             "10. ONLY show me the implementation, NO extra words. Wrap the code with a markdown code block.\n" +
-            "Note from user: pay attention to the method names, only 'generateStudentGroupSize, standardizedScores, generatePersonalScore' are implemented for GradeSystem, 'calculatePersonalScore' for Student.\n" +
-            "Take a deep breath and start."),
+            ""),
 
     REFINE_GET_CODE_USR(11, "This is a piece of coverage test result, which provides information about what method needs more tests. Pay attention to those lines marked 'NOT COVERED' and 'PARTLY COVERED' require more tests, and leverage the information in the code.\n" +
             "Coverage information:\n" +

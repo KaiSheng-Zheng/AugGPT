@@ -40,7 +40,7 @@ public class MultiAgentManager {
             return true;
         }
         else if(1010<=agentType.getCode() && agentType.getCode()<1020){
-            Agent agent = new AnthropicAgent(api, url, model);
+            Agent agent = new ChatGPTAgent(api, url, model);
             agents.put(name,agent);
             return true;
         }
@@ -50,6 +50,11 @@ public class MultiAgentManager {
             return true;
         }
         else if(1030<=agentType.getCode() && agentType.getCode()<1040){
+            Agent agent = new ChatGPTAgent(api, url, model);
+            agents.put(name,agent);
+            return true;
+        }
+        else if(1040<=agentType.getCode() && agentType.getCode()<1050){
             Agent agent = new ChatGPTAgent(api, url, model);
             agents.put(name,agent);
             return true;
